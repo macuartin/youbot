@@ -12,3 +12,4 @@
 | youbot_gazebo |  |
 | youbot_kinematics |  |
 | youbot_msgs |  |
+| youbot_traj_planner |  |
