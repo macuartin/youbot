@@ -57,20 +57,35 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
     Fz = np.zeros(shape=(n, 1))
 
     # Primer elemento
-    Fx[0] = ((3/h[0])*(checkpoints[1][0]-checkpoints[0][0])) - 3*initial_velocity[0]
-    Fy[0] = ((3/h[0])*(checkpoints[1][1]-checkpoints[0][1])) - 3*initial_velocity[1]
-    Fz[0] = ((3/h[0])*(checkpoints[1][2]-checkpoints[0][2])) - 3*initial_velocity[2]
+    Fx[0] = (((3/h[0])*(checkpoints[1][0]-checkpoints[0][0]))
+             - 3*initial_velocity[0])
+
+    Fy[0] = (((3/h[0])*(checkpoints[1][1]-checkpoints[0][1]))
+             - 3*initial_velocity[1])
+
+    Fz[0] = (((3/h[0])*(checkpoints[1][2]-checkpoints[0][2]))
+             - 3*initial_velocity[2])
 
     # Elementos del medio
     for i in range(1, n-1):
-        Fx[i] = ((3/h[i]) * (checkpoints[i+1][0]-checkpoints[i][0])) - ((3/h[i-1]) * (checkpoints[i][0]-checkpoints[i-1][0]))
-        Fy[i] = ((3/h[i]) * (checkpoints[i+1][1]-checkpoints[i][1])) - ((3/h[i-1]) * (checkpoints[i][1]-checkpoints[i-1][1]))
-        Fz[i] = ((3/h[i]) * (checkpoints[i+1][2]-checkpoints[i][2])) - ((3/h[i-1]) * (checkpoints[i][2]-checkpoints[i-1][2]))
+        Fx[i] = (((3/h[i]) * (checkpoints[i+1][0]-checkpoints[i][0]))
+                 - ((3/h[i-1]) * (checkpoints[i][0]-checkpoints[i-1][0])))
+
+        Fy[i] = (((3/h[i]) * (checkpoints[i+1][1]-checkpoints[i][1]))
+                 - ((3/h[i-1]) * (checkpoints[i][1]-checkpoints[i-1][1])))
+
+        Fz[i] = (((3/h[i]) * (checkpoints[i+1][2]-checkpoints[i][2]))
+                 - ((3/h[i-1]) * (checkpoints[i][2]-checkpoints[i-1][2])))
 
     # Ultimo elemento
-    Fx[n-1] = 3*final_velocity[0] - ((3/h[n-2]) * (checkpoints[n-1][0]-checkpoints[n-2][0]))
-    Fy[n-1] = 3*final_velocity[1] - ((3/h[n-2]) * (checkpoints[n-1][1]-checkpoints[n-2][1]))
-    Fz[n-1] = 3*final_velocity[2] - ((3/h[n-2]) * (checkpoints[n-1][2]-checkpoints[n-2][2]))
+    Fx[n-1] = (3*final_velocity[0]
+               - ((3/h[n-2]) * (checkpoints[n-1][0]-checkpoints[n-2][0])))
+
+    Fy[n-1] = (3*final_velocity[1]
+               - ((3/h[n-2]) * (checkpoints[n-1][1]-checkpoints[n-2][1])))
+
+    Fz[n-1] = (3*final_velocity[2]
+               - ((3/h[n-2]) * (checkpoints[n-1][2]-checkpoints[n-2][2])))
 
     # Resolinitial_velocityendo el Sistema b = A^-1 * f
     bx = np.dot(np.linalg.inv(A), Fx)
@@ -95,9 +110,14 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
         az[i] = (bz[i+1] - bz[i]) / (3*h[i])
 
         # Coeficiente c
-        cx[i] = ((1/h[i])*(checkpoints[i+1][0]-checkpoints[i][0])) - ((h[i]/3)*((2*bx[i]) + bx[i+1]))
-        cy[i] = ((1/h[i])*(checkpoints[i+1][1]-checkpoints[i][1])) - ((h[i]/3)*((2*by[i]) + by[i+1]))
-        cz[i] = ((1/h[i])*(checkpoints[i+1][2]-checkpoints[i][2])) - ((h[i]/3)*((2*bz[i]) + bz[i+1]))
+        cx[i] = (((1/h[i])*(checkpoints[i+1][0]-checkpoints[i][0]))
+                 - ((h[i]/3)*((2*bx[i]) + bx[i+1])))
+
+        cy[i] = (((1/h[i])*(checkpoints[i+1][1]-checkpoints[i][1]))
+                 - ((h[i]/3)*((2*by[i]) + by[i+1])))
+
+        cz[i] = (((1/h[i])*(checkpoints[i+1][2]-checkpoints[i][2]))
+                 - ((h[i]/3)*((2*bz[i]) + bz[i+1])))
 
         # Coeficiente d
         dx[i] = checkpoints[i][0]
@@ -127,13 +147,30 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
     # Variable Auxiliar para acumular la cantidad de tiempos
     p = 0
     for i in range(0, n-1):
-        Tk = np.arange(0, h[i]+sampling_time, sampling_time)  # Tiempo a evaluar en los polinomios (de 0 al delta de tiempo del tramo)
-        tc = np.arange(checkpoints_timing[i], checkpoints_timing[i+1]+sampling_time, sampling_time)  # Momento en el cual esta presente el robot en cada posicion
+        # Tiempo a evaluar en los polinomios
+        # (de 0 al delta de tiempo del tramo)
+        Tk = np.arange(0, h[i]+sampling_time, sampling_time)
+        # Momento en el cual esta presente el robot en cada posicion
+        tc = (np.arange(checkpoints_timing[i],
+              checkpoints_timing[i+1] + sampling_time,
+              sampling_time))
+
         k = len(Tk)
         for j in range(0, k):
-            X[j+p] = ((ax[i] * (Tk[j]**3)) + (bx[i] * (Tk[j]**2)) + (cx[i]*Tk[j]) + dx[i])
-            Y[j+p] = (ay[i] * (Tk[j]**3)) + (by[i] * (Tk[j]**2)) + (cy[i]*Tk[j]) + dy[i]
-            Z[j+p] = (az[i] * (Tk[j]**3)) + (bz[i] * (Tk[j]**2)) + (cz[i]*Tk[j]) + dz[i]
+            X[j+p] = ((ax[i] * (Tk[j]**3))
+                      + (bx[i] * (Tk[j]**2))
+                      + (cx[i]*Tk[j])
+                      + dx[i])
+
+            Y[j+p] = ((ay[i] * (Tk[j]**3))
+                      + (by[i] * (Tk[j]**2))
+                      + (cy[i]*Tk[j])
+                      + dy[i])
+
+            Z[j+p] = ((az[i] * (Tk[j]**3))
+                      + (bz[i] * (Tk[j]**2))
+                      + (cz[i]*Tk[j])
+                      + dz[i])
 
             Vx[j+p] = (3 * ax[i] * (Tk[j]**2)) + (2 * bx[i] * (Tk[j])) + cx[i]
             Vy[j+p] = (3 * ay[i] * (Tk[j]**2)) + (2 * by[i] * (Tk[j])) + cy[i]
@@ -143,9 +180,14 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
             Ay[j+p] = (6 * ay[i] * (Tk[j])) + (2 * by[i])
             Az[j+p] = (6 * az[i] * (Tk[j])) + (2 * bz[i])
 
-            Roll[j+p] = Tk[j]*(checkpoints[i+1][3] - checkpoints[i][3]) + checkpoints[i][3]
-            Pitch[j+p] = Tk[j]*(checkpoints[i+1][4] - checkpoints[i][4]) + checkpoints[i][4]
-            Yaw[j+p] = Tk[j]*(checkpoints[i+1][5] - checkpoints[i][5]) + checkpoints[i][5]
+            Roll[j+p] = (Tk[j]*(checkpoints[i+1][3] - checkpoints[i][3])
+                         + checkpoints[i][3])
+
+            Pitch[j+p] = (Tk[j]*(checkpoints[i+1][4] - checkpoints[i][4])
+                          + checkpoints[i][4])
+
+            Yaw[j+p] = (Tk[j]*(checkpoints[i+1][5] - checkpoints[i][5])
+                        + checkpoints[i][5])
 
             T[j+p] = tc[j]
         p = p + k
