@@ -5,29 +5,25 @@ from __future__ import division
 import numpy as np
 
 
-def traj_planner(arg1, arg2, arg3, arg4):
+def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity, final_velocity, sampling_time):
 
     '''
-        arg1: Puntos de control [[x0,y0,z0], [x1,y1,z1], ... , [xn,yn,zn]]
-        arg2: Vector de Tiempos [t0, t1, ... , tn ]
-        arg3: Velocidad inicial y final [[Vx0, Vy0, Vz0], [Vxn, Vyn, Vzn]]
-        arg4: timepo de muestreo en segundos
-    '''
+        checkpoints: [[x0,y0,z0], [x1,y1,z1], ... , [xn,yn,zn]].
 
-    #Datos de entrada
-    pc = arg1
-    vt = arg2
-    vi = arg3[0]
-    vf = arg3[1]
-    tm = arg4
+        checkpoints_timing: [t0, t1, ... , tn ].
+
+        velocity_vector: [[Vx0, Vy0, Vz0], [Vxn, Vyn, Vzn]].
+
+        sampling_time: time in seconds.
+    '''
 
     #Tamano del sistema
-    n = len(vt)
+    n = len(checkpoints_timing)
 
     #Vector de diferencias de tiempo.
     h = []
     for i in range(0,n-1):
-        h.append(vt[i+1]-vt[i] )
+        h.append(checkpoints_timing[i+1]-checkpoints_timing[i] )
 
     #Matriz A
     #Declaracion de Variable
@@ -56,23 +52,23 @@ def traj_planner(arg1, arg2, arg3, arg4):
     Fz = np.zeros(shape=(n,1))
 
     #Primer elemento
-    Fx[0] = ((3/h[0])*(pc[1][0]-pc[0][0])) - 3*vi[0]
-    Fy[0] = ((3/h[0])*(pc[1][1]-pc[0][1])) - 3*vi[1]
-    Fz[0] = ((3/h[0])*(pc[1][2]-pc[0][2])) - 3*vi[2]
+    Fx[0] = ((3/h[0])*(checkpoints[1][0]-checkpoints[0][0])) - 3*initial_velocity[0]
+    Fy[0] = ((3/h[0])*(checkpoints[1][1]-checkpoints[0][1])) - 3*initial_velocity[1]
+    Fz[0] = ((3/h[0])*(checkpoints[1][2]-checkpoints[0][2])) - 3*initial_velocity[2]
 
     #Elementos del medio
     for i in range(1,n-1):
-        Fx[i]=( (3/h[i]) * (pc[i+1][0]-pc[i][0]) ) - ( (3/h[i-1]) * (pc[i][0]-pc[i-1][0]) )
-        Fy[i]=( (3/h[i]) * (pc[i+1][1]-pc[i][1]) ) - ( (3/h[i-1]) * (pc[i][1]-pc[i-1][1]) )
-        Fz[i]=( (3/h[i]) * (pc[i+1][2]-pc[i][2]) ) - ( (3/h[i-1]) * (pc[i][2]-pc[i-1][2]) )
+        Fx[i]=( (3/h[i]) * (checkpoints[i+1][0]-checkpoints[i][0]) ) - ( (3/h[i-1]) * (checkpoints[i][0]-checkpoints[i-1][0]) )
+        Fy[i]=( (3/h[i]) * (checkpoints[i+1][1]-checkpoints[i][1]) ) - ( (3/h[i-1]) * (checkpoints[i][1]-checkpoints[i-1][1]) )
+        Fz[i]=( (3/h[i]) * (checkpoints[i+1][2]-checkpoints[i][2]) ) - ( (3/h[i-1]) * (checkpoints[i][2]-checkpoints[i-1][2]) )
 
     #Ultimo elemento
-    Fx[n-1]= 3*vf[0] - ((3/h[n-2]) * (pc[n-1][0]-pc[n-2][0]))
-    Fy[n-1]= 3*vf[1] - ((3/h[n-2]) * (pc[n-1][1]-pc[n-2][1]))
-    Fz[n-1]= 3*vf[2] - ((3/h[n-2]) * (pc[n-1][2]-pc[n-2][2]))
+    Fx[n-1]= 3*final_velocity[0] - ((3/h[n-2]) * (checkpoints[n-1][0]-checkpoints[n-2][0]))
+    Fy[n-1]= 3*final_velocity[1] - ((3/h[n-2]) * (checkpoints[n-1][1]-checkpoints[n-2][1]))
+    Fz[n-1]= 3*final_velocity[2] - ((3/h[n-2]) * (checkpoints[n-1][2]-checkpoints[n-2][2]))
 
 
-    #Resolviendo el Sistema b = A^-1 * f
+    #Resolinitial_velocityendo el Sistema b = A^-1 * f
     bx = np.dot(np.linalg.inv(A),Fx)
     by = np.dot(np.linalg.inv(A),Fy)
     bz = np.dot(np.linalg.inv(A),Fz)
@@ -95,20 +91,20 @@ def traj_planner(arg1, arg2, arg3, arg4):
         az[i] = (bz[i+1] - bz[i]) / (3*h[i])
         
         #Coeficiente c
-        cx[i] = ((1/h[i])*(pc[i+1][0]-pc[i][0])) - ((h[i]/3)*((2*bx[i])+ bx[i+1]))
-        cy[i] = ((1/h[i])*(pc[i+1][1]-pc[i][1])) - ((h[i]/3)*((2*by[i])+ by[i+1]))
-        cz[i] = ((1/h[i])*(pc[i+1][2]-pc[i][2])) - ((h[i]/3)*((2*bz[i])+ bz[i+1]))
+        cx[i] = ((1/h[i])*(checkpoints[i+1][0]-checkpoints[i][0])) - ((h[i]/3)*((2*bx[i])+ bx[i+1]))
+        cy[i] = ((1/h[i])*(checkpoints[i+1][1]-checkpoints[i][1])) - ((h[i]/3)*((2*by[i])+ by[i+1]))
+        cz[i] = ((1/h[i])*(checkpoints[i+1][2]-checkpoints[i][2])) - ((h[i]/3)*((2*bz[i])+ bz[i+1]))
         
         #Coeficiente d
-        dx[i] = pc[i][0]
-        dy[i] = pc[i][1]
-        dz[i] = pc[i][2]
+        dx[i] = checkpoints[i][0]
+        dy[i] = checkpoints[i][1]
+        dz[i] = checkpoints[i][2]
 
     #Calculo de Posicion, Velocidad y Aceleracion.
     #Tamano de los vectores
     tv = 0 
     for i in range(0,n-1):
-        tv = tv + len(np.arange(0,h[i]+tm,tm))
+        tv = tv + len(np.arange(0,h[i]+sampling_time,sampling_time))
 
     #Creacion de Vectores     
     X=np.zeros(shape=(tv,1))
@@ -127,8 +123,8 @@ def traj_planner(arg1, arg2, arg3, arg4):
     #Variable Auxiliar para acumular la cantidad de tiempos
     p = 0
     for i in range(0,n-1):
-        Tk = np.arange(0,h[i]+tm,tm) #Tiempo a evaluar en los polinomios (de 0 al delta de tiempo del tramo)
-        tc = np.arange(vt[i],vt[i+1]+tm, tm) #Momento en el cual esta presente el robot en cada posicion
+        Tk = np.arange(0,h[i]+sampling_time,sampling_time) #Tiempo a evaluar en los polinomios (de 0 al delta de tiempo del tramo)
+        tc = np.arange(checkpoints_timing[i],checkpoints_timing[i+1]+sampling_time, sampling_time) #Momento en el cual esta presente el robot en cada posicion
         k = len(Tk)
         for j in range(0,k):
             X[j+p] = ((ax[i] * (Tk[j]**3)) + (bx[i] * (Tk[j]**2)) + (cx[i]*Tk[j]) + dx[i])
@@ -143,12 +139,11 @@ def traj_planner(arg1, arg2, arg3, arg4):
             Ay[j+p] = (6 * ay[i] * (Tk[j])) + (2 * by[i])
             Az[j+p] = (6 * az[i] * (Tk[j])) + (2 * bz[i])
 
-            Roll[j+p] = Tk[j]*(pc[i+1][3] - pc[i][3]) + pc[i][3]
-            Pitch[j+p] = Tk[j]*(pc[i+1][4] - pc[i][4]) + pc[i][4]
-            Yaw[j+p] = Tk[j]*(pc[i+1][5] - pc[i][5]) + pc[i][5]
-
-            
+            Roll[j+p] = Tk[j]*(checkpoints[i+1][3] - checkpoints[i][3]) + checkpoints[i][3]
+            Pitch[j+p] = Tk[j]*(checkpoints[i+1][4] - checkpoints[i][4]) + checkpoints[i][4]
+            Yaw[j+p] = Tk[j]*(checkpoints[i+1][5] - checkpoints[i][5]) + checkpoints[i][5]
             
             T[j+p] = tc[j]
         p = p + k
+        
     return X,Y,Z,Vx,Vy,Vz,Roll,Pitch,Yaw
