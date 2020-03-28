@@ -5,7 +5,7 @@ from __future__ import division
 import numpy as np
 
 
-def generate_a_matrix(n, h):
+def get_a_matrix(n, h):
 
     # Declaracion de Variable
     A = np.zeros(shape=(n, n))
@@ -26,6 +26,60 @@ def generate_a_matrix(n, h):
     A[n-1, n-1] = 2 * h[n-2]
 
 
+def get_F_vector(n, h, checkpoints,
+                 initial_velocity, final_velocity, component):
+
+    # Vector F
+    # Declaracion de Variable
+    F = np.zeros(shape=(n, 1))
+
+    # Primer elemento
+    F[0] = (((3/h[0])*(checkpoints[1][component]-checkpoints[0][component]))
+            - 3*initial_velocity[component])
+
+    # Elementos del medio
+    for i in range(1, n-1):
+        F[i] = (((3/h[i])
+                * (checkpoints[i+1][component]-checkpoints[i][component]))
+                - ((3/h[i-1])
+                * (checkpoints[i][component]-checkpoints[i-1][component])))
+
+    # Ultimo elemento
+    F[n-1] = (3*final_velocity[component]
+              - ((3/h[n-2])
+              * (checkpoints[n-1][component]-checkpoints[n-2][component])))
+
+    return F
+
+
+def get_b_coefficient(A, F):
+    # Resolviendo el Sistema b = A^-1 * f
+    return np.dot(np.linalg.inv(A), F)
+
+
+def get_a_coefficient(n, b, h, checkpoints, component):
+    a = np.zeros(shape=(n, 1))
+    for i in range(0, n-1):
+        a[i] = (b[i+1] - b[i]) / (3*h[i])
+    return a
+
+
+def get_c_coefficient(n, b, h, checkpoints, component):
+    c = np.zeros(shape=(n, 1))
+    for i in range(0, n-1):
+        c[i] = (((1/h[i])*(checkpoints[i+1][component]
+                - checkpoints[i][component]))
+                - ((h[i]/3)*((2*b[i]) + b[i+1])))
+    return c
+
+
+def get_d_coefficient(n, b, h, checkpoints, component):
+    d = np.zeros(shape=(n, 1))
+    for i in range(0, n-1):
+        d[i] = checkpoints[i][component]
+    return d
+
+
 def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
                           final_velocity, sampling_time):
 
@@ -39,6 +93,11 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
         sampling_time: time in seconds.
     '''
 
+    # Components
+    x = 0
+    y = 1
+    z = 2
+
     # Tamano del sistema
     n = len(checkpoints_timing)
 
@@ -48,81 +107,29 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
         h.append(checkpoints_timing[i+1]-checkpoints_timing[i])
 
     # Matriz A
-    A = generate_a_matrix(n, h)
+    A = get_a_matrix(n, h)
 
     # Vector F
-    # Declaracion de Variable
-    Fx = np.zeros(shape=(n, 1))
-    Fy = np.zeros(shape=(n, 1))
-    Fz = np.zeros(shape=(n, 1))
-
-    # Primer elemento
-    Fx[0] = (((3/h[0])*(checkpoints[1][0]-checkpoints[0][0]))
-             - 3*initial_velocity[0])
-
-    Fy[0] = (((3/h[0])*(checkpoints[1][1]-checkpoints[0][1]))
-             - 3*initial_velocity[1])
-
-    Fz[0] = (((3/h[0])*(checkpoints[1][2]-checkpoints[0][2]))
-             - 3*initial_velocity[2])
-
-    # Elementos del medio
-    for i in range(1, n-1):
-        Fx[i] = (((3/h[i]) * (checkpoints[i+1][0]-checkpoints[i][0]))
-                 - ((3/h[i-1]) * (checkpoints[i][0]-checkpoints[i-1][0])))
-
-        Fy[i] = (((3/h[i]) * (checkpoints[i+1][1]-checkpoints[i][1]))
-                 - ((3/h[i-1]) * (checkpoints[i][1]-checkpoints[i-1][1])))
-
-        Fz[i] = (((3/h[i]) * (checkpoints[i+1][2]-checkpoints[i][2]))
-                 - ((3/h[i-1]) * (checkpoints[i][2]-checkpoints[i-1][2])))
-
-    # Ultimo elemento
-    Fx[n-1] = (3*final_velocity[0]
-               - ((3/h[n-2]) * (checkpoints[n-1][0]-checkpoints[n-2][0])))
-
-    Fy[n-1] = (3*final_velocity[1]
-               - ((3/h[n-2]) * (checkpoints[n-1][1]-checkpoints[n-2][1])))
-
-    Fz[n-1] = (3*final_velocity[2]
-               - ((3/h[n-2]) * (checkpoints[n-1][2]-checkpoints[n-2][2])))
-
-    # Resolinitial_velocityendo el Sistema b = A^-1 * f
-    bx = np.dot(np.linalg.inv(A), Fx)
-    by = np.dot(np.linalg.inv(A), Fy)
-    bz = np.dot(np.linalg.inv(A), Fz)
+    Fx = get_F_vector(n, h, checkpoints, initial_velocity, final_velocity, x)
+    Fy = get_F_vector(n, h, checkpoints, initial_velocity, final_velocity, y)
+    Fz = get_F_vector(n, h, checkpoints, initial_velocity, final_velocity, z)
 
     # Calculo de Coeficientes
-    ax = np.zeros(shape=(n, 1))
-    ay = np.zeros(shape=(n, 1))
-    az = np.zeros(shape=(n, 1))
-    cx = np.zeros(shape=(n, 1))
-    cy = np.zeros(shape=(n, 1))
-    cz = np.zeros(shape=(n, 1))
-    dx = np.zeros(shape=(n, 1))
-    dy = np.zeros(shape=(n, 1))
-    dz = np.zeros(shape=(n, 1))
+    bx = get_b_coefficient(A, Fx)
+    by = get_b_coefficient(A, Fy)
+    bz = get_b_coefficient(A, Fz)
 
-    for i in range(0, n-1):
-        # Coeficiente a
-        ax[i] = (bx[i+1] - bx[i]) / (3*h[i])
-        ay[i] = (by[i+1] - by[i]) / (3*h[i])
-        az[i] = (bz[i+1] - bz[i]) / (3*h[i])
+    ax = get_a_coefficient(n, bx, h, checkpoints, x)
+    ay = get_a_coefficient(n, by, h, checkpoints, y)
+    az = get_a_coefficient(n, bz, h, checkpoints, z)
 
-        # Coeficiente c
-        cx[i] = (((1/h[i])*(checkpoints[i+1][0]-checkpoints[i][0]))
-                 - ((h[i]/3)*((2*bx[i]) + bx[i+1])))
+    cx = get_c_coefficient(n, bx, h, checkpoints, x)
+    cy = get_c_coefficient(n, by, h, checkpoints, y)
+    cz = get_c_coefficient(n, bz, h, checkpoints, z)
 
-        cy[i] = (((1/h[i])*(checkpoints[i+1][1]-checkpoints[i][1]))
-                 - ((h[i]/3)*((2*by[i]) + by[i+1])))
-
-        cz[i] = (((1/h[i])*(checkpoints[i+1][2]-checkpoints[i][2]))
-                 - ((h[i]/3)*((2*bz[i]) + bz[i+1])))
-
-        # Coeficiente d
-        dx[i] = checkpoints[i][0]
-        dy[i] = checkpoints[i][1]
-        dz[i] = checkpoints[i][2]
+    dx = get_d_coefficient(n, bx, h, checkpoints, x)
+    dy = get_d_coefficient(n, by, h, checkpoints, y)
+    dz = get_d_coefficient(n, bz, h, checkpoints, z)
 
     # Calculo de Posicion, Velocidad y Aceleracion.
     # Tamano de los vectores
