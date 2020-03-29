@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
-from youbot_traj_planner.cubic_splines_planner import cubic_splines_planner
+from youbot_traj_planner.cartesian_traj_generator import cubic_splines_planner
 from numpy import pi
 
 
@@ -31,6 +31,8 @@ if __name__ == '__main__':
 
         cubic_splines_planner(checkpoints, checkpoints_timing,
                               initial_velocity, final_velocity, sampling_time)
+
+        planner_talker(1, 1, 1, 100)
 
     except rospy.ROSInterruptException:
         pass

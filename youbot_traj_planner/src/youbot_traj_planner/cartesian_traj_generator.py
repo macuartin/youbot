@@ -25,6 +25,8 @@ def get_a_matrix(n, h):
     # Ultimo componente de la diagonal principal
     A[n-1, n-1] = 2 * h[n-2]
 
+    return A
+
 
 def get_F_vector(n, h, checkpoints,
                  initial_velocity, final_velocity, component):
