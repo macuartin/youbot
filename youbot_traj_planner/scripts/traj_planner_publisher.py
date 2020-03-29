@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
-from youbot_traj_planner.traj_planner_publisher import cubic_splines_planner
+from youbot_traj_planner.cartesian_traj_generator import cubic_splines_planner
 from numpy import pi
 
 
