@@ -23,11 +23,11 @@ def planner_talker(q, qd, qdd, path_points):
 if __name__ == '__main__':
 
     try:
-        checkpoints = [[0, 0, 0, pi/3, pi, pi/2], [5, 7, 1, pi/2, pi/3, pi/3]]
-        checkpoints_timing = [1, 4]
-        initial_velocity = [2, 3, 6]
-        final_velocity = [4, 2, 1]
-        sampling_time = 0.05
+        checkpoints = rospy.get_param('/traj_planner_publisher/checkpoints')
+        checkpoints_timing = rospy.get_param('/traj_planner_publisher/checkpoints_timing')
+        initial_velocity = rospy.get_param('/traj_planner_publisher/initial_velocity')
+        final_velocity = rospy.get_param('/traj_planner_publisher/final_velocity')
+        sampling_time = rospy.get_param('/traj_planner_publisher/sampling_time')
 
         cubic_splines_planner(checkpoints, checkpoints_timing,
                               initial_velocity, final_velocity, sampling_time)

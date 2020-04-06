@@ -1,0 +1,13 @@
+---
+
+  checkpoints:
+    - [0, 0, 0, 1.047197, 3.141592, 1.570796]
+    - [5, 7, 1, 1.570796, 1.047197, 1.047197]
+  checkpoints_timing:
+    - 1
+    - 4
+  initial_velocity: [2, 3, 6]
+  final_velocity: [4, 2, 1]
+  sampling_time: 0.05
+
+...
