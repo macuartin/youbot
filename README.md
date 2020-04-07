@@ -10,6 +10,6 @@
 | youbot_description |
 | youbot_driver |
 | youbot_gazebo |
-| youbot_kinematics |
+| youbot_mechanics |
 | youbot_msgs |
 | youbot_traj_planner |
