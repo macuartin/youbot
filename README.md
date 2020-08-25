@@ -18,6 +18,7 @@ ROS packages for the KUKA YouBot robot.
 Before you begin, ensure you have met the following requirements:
 * You have a Linux machine with Ubuntu Xenial 16.0. LTS
 * You have installed [ROS Kinetic](http://wiki.ros.org/kinetic/Installation)
+* You have installed [catkin_tools](https://catkin-tools.readthedocs.io/en/latest/installing.html)
 * You have installed [Python 2.7](https://www.python.org/downloads/)
 
 ## Installation
@@ -40,29 +41,24 @@ Compile your ROS workspace:
 cd ~/catkin_ws && catkin_make
 ```
 
-## Using <project_name>
-
-To use <project_name>, follow these steps:
-
-```
-<usage_example>
-```
-
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
-
 ## Quickstart
 
-To use <project_name>, follow these steps:
+Be sure to always source the appropriate ROS setup file, e.g:
 
+```bash
+source ~/catkin_ws/devel/setup.bash
 ```
-<usage_example>
-```
+You might want to add the line above to your ~/.bashrc file.
 
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
+Try the following command:
+
+```bash
+roslaunch youbot_bringup main.launch
+```
 
 ## Contributing
 
-To contribute to <project_name>, follow these steps:
+To contribute, follow these steps:
 
 1. Fork this repository.
 2. Create a branch: `git checkout -b <branch_name>`.
@@ -79,7 +75,7 @@ Alternatively see the GitHub documentation on [creating a pull request](https://
 
 ## Contact
 
-If you want to contact me you can reach me at <your_email@address.com>.
+If you want to contact me you can reach me at [macuartin@gmail.com](mailto:macuartin@gmail.com)
 
 ## License
 <!--- If you're not sure which open license to use see https://choosealicense.com/--->
