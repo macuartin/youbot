@@ -1,40 +1,45 @@
-# readme-best-practices
+# YouBot
 [![python](https://img.shields.io/badge/python-v3.7.X-green.svg)](https://www.python.org/)
 [![pip](https://img.shields.io/badge/pip-v10.0.X-yellow.svg)](https://pypi.org/project/pip/)
 [![virtualenv](https://img.shields.io/badge/virtualenv-v15.1.X-red.svg)](https://virtualenv.pypa.io/en/stable/)
 
-Project name is a `<utility/tool/feature>` that allows `<insert_target_audience>` to do `<action/task_it_does>`.
-
-Additional line of information text about what the project does. Your introduction should be around 2 or 3 sentences. Don't go overboard, people won't read it.
+ROS packages for the KUKA YouBot robot.
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Quickstart](#quickstart)
 - [Contributing](#contributing)
 - [Further reading / Useful links](#further-reading--useful-links)
 
-## Prerequisites
+## Requirements
 
 Before you begin, ensure you have met the following requirements:
-* You have installed the latest version of `<coding_language/dependency/requirement_1>`
-* You have a `<Windows/Linux/Mac>` machine. State which OS is supported/which is not.
-* You have read `<guide/link/documentation_related_to_project>`.
+* You have a Linux machine with Ubuntu Xenial 16.0. LTS
+* You have installed [ROS Kinetic](http://wiki.ros.org/kinetic/Installation)
+* You have installed [Python 2.7](https://www.python.org/downloads/)
 
 ## Installation
 
-To install <project_name>, follow these steps:
+Go to your ROS working directory:
 
-Linux and macOS:
-```
-<install_command>
+```bash
+cd ~/catkin_ws/src
 ```
 
-Windows:
+Clone the required repositories:
+
+```bash
+git clone https://github.com/macuartin/youbot.git
 ```
-<install_command>
+
+Compile your ROS workspace:
+
+```bash
+cd ~/catkin_ws && catkin_make
 ```
+
 ## Using <project_name>
 
 To use <project_name>, follow these steps:
