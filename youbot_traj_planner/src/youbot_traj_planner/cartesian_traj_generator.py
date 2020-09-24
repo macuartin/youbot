@@ -140,19 +140,19 @@ def cubic_splines_planner(checkpoints, checkpoints_timing, initial_velocity,
         tv = tv + len(np.arange(0, h[i]+sampling_time, sampling_time))
 
     # Creacion de Vectores
-    X = np.zeros(shape=(tv, 1))
-    Y = np.zeros(shape=(tv, 1))
-    Z = np.zeros(shape=(tv, 1))
-    Roll = np.zeros(shape=(tv, 1))
-    Pitch = np.zeros(shape=(tv, 1))
-    Yaw = np.zeros(shape=(tv, 1))
-    Vx = np.zeros(shape=(tv, 1))
-    Vy = np.zeros(shape=(tv, 1))
-    Vz = np.zeros(shape=(tv, 1))
-    Ax = np.zeros(shape=(tv, 1))
-    Ay = np.zeros(shape=(tv, 1))
-    Az = np.zeros(shape=(tv, 1))
-    T = np.zeros(shape=(tv, 1))
+    X = np.zeros(tv, dtype=np.float64)
+    Y = np.zeros(tv)
+    Z = np.zeros(tv)
+    Roll = np.zeros(tv)
+    Pitch = np.zeros(tv)
+    Yaw = np.zeros(tv)
+    Vx = np.zeros(tv)
+    Vy = np.zeros(tv)
+    Vz = np.zeros(tv)
+    Ax = np.zeros(tv)
+    Ay = np.zeros(tv)
+    Az = np.zeros(tv)
+    T = np.zeros(tv)
     # Variable Auxiliar para acumular la cantidad de tiempos
     p = 0
     for i in range(0, n-1):
