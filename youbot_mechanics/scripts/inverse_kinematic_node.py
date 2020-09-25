@@ -12,7 +12,7 @@ def planner_listener():
 
 
 def printer(data):
-    rospy.loginfo(data.x)
+    rospy.loginfo(data)
 
 
 if __name__ == '__main__':
