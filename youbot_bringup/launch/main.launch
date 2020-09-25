@@ -1,5 +1,5 @@
 <launch>
-    <node pkg="youbot_traj_planner" type="traj_planner_node.py" name="traj_planner_node">
+    <node pkg="youbot_control" type="traj_planner_node.py" name="traj_planner_node">
         <rosparam file="$(find youbot_bringup)/config/youbot_traj_planner.yaml" />
     </node>
 </launch>

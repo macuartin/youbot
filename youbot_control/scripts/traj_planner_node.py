@@ -2,7 +2,7 @@
 import rospy
 from youbot_msgs.msg import Point
 from rospy.numpy_msg import numpy_msg
-from youbot_traj_planner.cartesian_traj_generator import cubic_splines_planner
+from youbot_control.cartesian_traj_generator import cubic_splines_planner
 from numpy import pi
 
 
