@@ -1,82 +1,39 @@
-# readme-best-practices
-[![python](https://img.shields.io/badge/python-v3.7.X-green.svg)](https://www.python.org/)
-[![pip](https://img.shields.io/badge/pip-v10.0.X-yellow.svg)](https://pypi.org/project/pip/)
-[![virtualenv](https://img.shields.io/badge/virtualenv-v15.1.X-red.svg)](https://virtualenv.pypa.io/en/stable/)
+# YouBot
 
-Project name is a `<utility/tool/feature>` that allows `<insert_target_audience>` to do `<action/task_it_does>`.
+ROS packages for KUKA YouBot Robot
 
-Additional line of information text about what the project does. Your introduction should be around 2 or 3 sentences. Don't go overboard, people won't read it.
-
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Quickstart](#quickstart)
-- [Contributing](#contributing)
-- [Further reading / Useful links](#further-reading--useful-links)
-
-## Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-* You have installed the latest version of `<coding_language/dependency/requirement_1>`
-* You have a `<Windows/Linux/Mac>` machine. State which OS is supported/which is not.
-* You have read `<guide/link/documentation_related_to_project>`.
-
+**Maintainer:** [Miguel Cuartin Ordaz](https://www.linkedin.com/in/macuartin/)
+  
 ## Installation
 
-To install <project_name>, follow these steps:
+### Basic Requirements
 
-Linux and macOS:
+  1. Install [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu) (**Base Install** Recommended)
+
+### Repository Installation
+
+Go to your ROS working directory. e.g.
+```bash
+cd ~/catkin_ws/src
+``` 
+Clone the required repositories:
+```bash
+git clone https://github.com/fsuarez6/lenny.git
 ```
-<install_command>
-```
+Install any missing dependencies using rosdep:
+```bash
+rosdep update
+rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO
+``` 
+Now compile your ROS workspace. e.g.
+```bash
+cd ~/catkin_ws && catkin_make
+``` 
 
-Windows:
-```
-<install_command>
-```
-## Using <project_name>
+### Testing Installation
 
-To use <project_name>, follow these steps:
-
-```
-<usage_example>
-```
-
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
-
-## Quickstart
-
-To use <project_name>, follow these steps:
-
-```
-<usage_example>
-```
-
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
-
-## Contributing
-
-To contribute to <project_name>, follow these steps:
-
-1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
-3. Make your changes and commit them: `git commit -m '<commit_message>'`
-4. Push to the original branch: `git push origin <project_name>/<location>`
-5. Create the pull request.
-
-Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
-
-## Further reading / Useful links
-
-* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-## Contact
-
-If you want to contact me you can reach me at <your_email@address.com>.
-
-## License
-<!--- If you're not sure which open license to use see https://choosealicense.com/--->
-
-This project uses the following license: [<license_name>](<link>).
+Be sure to always source the appropriate ROS setup file:
+```bash
+source ~/catkin_ws/devel/setup.bash
+``` 
+You might want to add that line to your `~/.bashrc`

@@ -1,10 +1,37 @@
 ---
 
 DH:
-  - []
-  - []
-  - []
-  - []
-  - []
+  number_of_links: 5
+  links:
+    link_1:
+      type: 'rotational'
+      theta: 'q1'
+      d: 0.147
+      a: 0.033
+      alpha: 1.5707
+    link_2:
+      type: 'rotational'
+      theta: 'q2'
+      d: 0
+      a: 0.155
+      alpha: 0
+    link_3:
+      type: 'rotational'
+      theta: 'q3'
+      d: 0
+      a: 0.135
+      alpha: 0
+    link_4:
+      type: 'rotational'
+      theta: 'q4'
+      d: 0
+      a: 0
+      alpha: 1.5707
+    link_5:
+      type: 'rotational'
+      theta: 'q5'
+      d: 0.2175
+      a: 0
+      alpha: 0
 
 ...
