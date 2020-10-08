@@ -19,6 +19,11 @@ add_message_files(
   Point.msg
 )
 
+add_service_files(
+  FILES
+  InverseKinematic.srv
+)
+
 # Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
