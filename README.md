@@ -21,6 +21,8 @@ Before you begin, ensure you have met the following requirements:
 * You have installed [catkin_tools](https://catkin-tools.readthedocs.io/en/latest/installing.html)
 * You have installed [Python 2.7](https://www.python.org/downloads/)
 
+**Maintainer:** [Miguel Cuartin Ordaz](https://www.linkedin.com/in/macuartin/)
+  
 ## Installation
 
 Go to your ROS working directory:
