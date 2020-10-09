@@ -10,12 +10,17 @@ from numpy import pi
 if __name__ == '__main__':
 
     try:
-        rospy.init_node('traj_planner_node')
-        checkpoints = rospy.get_param('/traj_planner_node/checkpoints')
-        checkpoints_timing = rospy.get_param('/traj_planner_node/checkpoints_timing')
-        initial_velocity = rospy.get_param('/traj_planner_node/initial_velocity')
-        final_velocity = rospy.get_param('/traj_planner_node/final_velocity')
-        sampling_time = rospy.get_param('/traj_planner_node/sampling_time')
+
+        rospy.loginfo('wating for inverse_kinematic service')
+        rospy.wait_for_service('inverse_kinematic')
+
+        rospy.init_node('controller_node')
+
+        checkpoints = rospy.get_param('/controller_node/checkpoints')
+        checkpoints_timing = rospy.get_param('/controller_node/checkpoints_timing')
+        initial_velocity = rospy.get_param('/controller_node/initial_velocity')
+        final_velocity = rospy.get_param('/controller_node/final_velocity')
+        sampling_time = rospy.get_param('/controller_node/sampling_time')
 
         controller = TrajectoryController(checkpoints,
                                           checkpoints_timing,
@@ -26,25 +31,28 @@ if __name__ == '__main__':
 
         position = controller.get_position_trajectory()
         velocity = controller.get_velocity_trajectory()
+        path_points = len(position)
 
-        # pub = rospy.Publisher('traj_planner_topic', numpy_msg(Point), queue_size=10)
+        pub = rospy.Publisher('kinematic_control_topic', numpy_msg(Point), queue_size=10)
         rate = rospy.Rate(10)
-        msg = Point()
+        pos = Point()
+        vel = Point()
 
-        rospy.loginfo('wating for inverse_kinematic service')
-        rospy.wait_for_service('inverse_kinematic')
+        for point in range(path_points):
+            pos.x = position[point][0]
+            pos.y = position[point][1]
+            pos.z = position[point][2]
 
-        for point in position:
-            msg.x = point[0]
-            msg.y = point[1]
-            msg.z = point[2]
+            vel.x = velocity[point][0]
+            vel.y = velocity[point][1]
+            vel.z = velocity[point][2]
 
             get_joints = rospy.ServiceProxy('inverse_kinematic',
                                             InverseKinematic)
 
-            joints = get_joints(msg)
+            joints = get_joints(pos, vel)
 
-            # pub.publish(msg)
+            pub.publish(pos)
             rospy.loginfo(joints.success)
             rate.sleep()
 
