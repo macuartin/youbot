@@ -1,0 +1,16 @@
+{
+  "episodes": 120,
+  "frames": 24431,
+  "length_mean": 203.59166666666667,
+  "length_max": 379,
+  "settled_fraction": 1.0,
+  "expert_position_error_mm": {
+    "mean": 5.8381700817772355,
+    "p95": 8.733600676893648,
+    "max": 9.253942903282537
+  },
+  "expert_heading_error_deg": {
+    "mean": 0.4304834134630403,
+    "max": 0.853677571870279
+  }
+}

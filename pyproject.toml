@@ -16,6 +16,12 @@ dev = [
     "sympy>=1.13",
     "matplotlib>=3.9",
 ]
+# Grupo aparte: torch y lerobot pesan mucho y el nucleo no los necesita.
+# El repo se puede usar y testear entero sin instalarlos.
+vla = [
+    "lerobot[smolvla]>=0.4",
+    "torch>=2.5",
+]
 
 [build-system]
 requires = ["hatchling"]
