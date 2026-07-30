@@ -84,7 +84,93 @@ Al final se encadena `attempt_grasp`, igual que en la Fase 2, para traducir el e
 
 ## Resultados
 
-Pendiente: se rellena al terminar el entrenamiento.
+### Lazo cerrado, 40 ensayos sobre las mismas poses iniciales
+
+| Métrica | Experto clásico | Destilada (chunk 50) |
+|---|---|---|
+| Ensayos completados | 40 de 40 | 40 de 40 |
+| Error de posición, media | **4,86 mm** | 74,51 mm |
+| Error de posición, p95 | 8,26 mm | 160,14 mm |
+| Error de posición, máximo | 8,95 mm | 184,43 mm |
+| Error de guiñada, media | 0,30° | 3,42° |
+| Se asentaron por criterio propio | 100% | 38% |
+| **Éxito de agarre** | **100%** | **55%** |
+
+La política queda un factor 15 por detrás de su propio maestro. El 55% de agarre se explica por el presupuesto de la tarea derivado en la Fase 2: como el límite lateral son 54 mm y la política aterriza en 74,5 mm de media, aproximadamente la mitad de los ensayos cae dentro por poco.
+
+### El diagnóstico en lazo abierto, que es lo que da la interpretación
+
+Antes de leer nada de la tabla anterior hay que responder si la política reproduce las acciones del experto sobre los fotogramas **con los que se entrenó**. Si no lo hace, el error en lazo cerrado no informa sobre acumulación de error ni sobre control, sino sobre que el modelo no aprendió la tarea.
+
+| Checkpoint | Error relativo | Correlación avance | Correlación lateral | Correlación giro |
+|---|---|---|---|---|
+| paso 1.500 | 122,8% | 0,876 | 0,384 | -0,063 |
+| paso 2.500 | 90,6% | 0,940 | 0,486 | 0,255 |
+| paso 3.000 | 98,1% | 0,821 | 0,527 | 0,168 |
+
+Referencias: predecir siempre cero da 100,0% de error relativo; predecir la media del dataset, 103,5%.
+
+En norma L2 la política empata con "predecir cero", lo cual leído solo suena a fracaso total. Pero las correlaciones dicen otra cosa: **aprendió bien la componente de avance (r entre 0,82 y 0,94) y mal las correcciones laterales y de giro** (0,38 a 0,53 y en torno a 0,17).
+
+Eso localiza el fallo. Lo grueso, acercarse al marcador, es fácil de aprender. Lo fino, las correcciones que dependen de leer las esquinas del marcador con exactitud subpíxel, no se aprendió. Y son justamente las que dan la precisión.
+
+No hay mejora monótona entre checkpoints. Con tres puntos y 64 muestras es evidencia débil, pero no apunta a que más pasos, en este régimen, lo resuelvan solos.
+
+### La latencia real, y una medición que hubo que rectificar
+
+La primera medida de latencia, 19,8 ms y 50 Hz efectivos, **estaba mal** y conviene explicar por qué porque el error es fácil de cometer.
+
+SmolVLA usa action chunking: por defecto `chunk_size=50` y `n_action_steps=50`. Cada inferencia produce 50 acciones que se consumen de una cola. Cronometrar `select_action` en cada paso promedia una inferencia real con 49 lecturas de cola, y da un número unas cincuenta veces optimista.
+
+Midiendo con `n_action_steps=1`, donde cada paso es una inferencia de verdad:
+
+| Configuración | Latencia por decisión | Frecuencia real |
+|---|---|---|
+| Aparente, promediando sobre la cola | 19,8 ms | 50,5 Hz |
+| **Real, una inferencia por paso** | **625 ms** | **1,6 Hz** |
+
+1,6 Hz en el MPS de un M1. Queda muy por debajo de los 10 Hz que la literatura señala como frontera para despliegue industrial. El chunking entrega un lazo a 20 Hz, pero cada decisión se toma con información de hasta 2,5 segundos antes.
+
+### Replanificar en cada paso lo empeora
+
+La hipótesis natural era que esos 2,5 segundos de ejecución a ciegas explicaban el fallo. Se probó y **es falso**:
+
+| Métrica | Chunk 50 (40 ensayos) | Chunk 1 (20 ensayos) |
+|---|---|---|
+| Marcador perdido | 0 | **10 de 20** |
+| Error medio, de los completados | 74,5 mm | 119,3 mm |
+| Se asentaron | 38% | 30% |
+
+Replanificar cada paso no mejora: destruye la maniobra. La mitad de los ensayos pierde el marcador de vista, cosa que no pasaba ni una sola vez con el chunk por defecto.
+
+La explicación encaja con el diagnóstico en lazo abierto. Si cada predicción individual es ruidosa, ejecutar un chunk de 50 actúa como suavizado y el vehículo avanza en una dirección coherente. Replanificar en cada paso mete el ruido de cada predicción directamente en el lazo, y el vehículo serpentea hasta salirse del campo de visión.
+
+El 70% de agarre que aparece en esa columna no es una mejora: está calculado solo sobre los 10 ensayos que sobrevivieron, que son los fáciles. Es sesgo de selección y no debe compararse con el 55% de la otra columna.
+
+## Qué se puede concluir y qué no
+
+**Se puede concluir**, sobre este banco y con este presupuesto:
+
+- Una política de 450M destilada de un controlador clásico, con 120 demostraciones y 3.000 pasos de entrenamiento en un portátil, queda un factor 15 por detrás de su maestro en precisión de estacionamiento, y convierte un 100% de éxito de agarre en un 55%.
+- El fallo está localizado: aprende el avance y no las correcciones finas.
+- La latencia real de inferencia en hardware de consumo es 1,6 Hz, y el action chunking, que es lo que hace usable esa latencia, es también lo que impide replanificar con frecuencia.
+
+**No se puede concluir** que los VLA no sirvan para estacionamiento de precisión. El entrenamiento fueron 3.000 pasos frente a los 20.000 que recomienda la documentación de SmolVLA, con batch 4 impuesto por los 16 GB de memoria del equipo, sin búsqueda de hiperparámetros, sin planificador de tasa de aprendizaje y sin aumento de datos. Presentar este resultado como una propiedad del método sería atribuirle al modelo una limitación que podría ser del montaje.
+
+## La hipótesis que queda abierta, y cómo se falsa
+
+La sospecha, que este trabajo no resuelve, es que el límite no es de cómputo sino **de representación**.
+
+El marcador ocupa 53 px en la observación de 256x192. El backbone visual tokeniza en parches de unos 16 px, así que el marcador entero abarca tres o cuatro parches. El controlador clásico obtiene su precisión del refinamiento subpíxel de las esquinas, diferencias de medio píxel. Una representación por parches de ese tamaño descarta esa información antes de que la red la vea. Si es así, más cómputo no lo arregla.
+
+Encaja con la literatura: π0 afinado con presupuesto serio, en una GPU H20 de 96 GB, sigue reportando 2,2 cm de error de posición.
+
+Dos experimentos la falsarían, y ninguno necesita hardware nuevo:
+
+1. **Repetir a 640x480 para maestro y alumno.** El marcador pasa de 53 a 133 px, o sea de 3 parches a 8, y el maestro mejora a 1,43 mm. Si la hipótesis es correcta, el alumno debería mejorar proporcionalmente más que el maestro.
+2. **Acumulación de gradiente para batch efectivo 32**, que cabe en 16 GB y prueba directamente si el batch pequeño era el problema.
+
+Si tras eso el error sigue en la decena de centímetros, el límite representacional queda confirmado y el resultado pasa de inconcluso a publicable.
 
 ## Limitaciones
 

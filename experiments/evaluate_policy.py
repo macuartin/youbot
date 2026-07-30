@@ -98,7 +98,7 @@ def evaluate_expert(
     return rows
 
 
-def load_policy(device: str | None):
+def load_policy(device: str | None, n_action_steps: int | None = None):
     import torch
     from lerobot.datasets.lerobot_dataset import LeRobotDataset
     from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
@@ -113,6 +113,15 @@ def load_policy(device: str | None):
 
     dataset = LeRobotDataset(repo_id="macuartin/youbot-docking", root=DATASET)
     config = make_config(dataset.meta, device)
+
+    # Cuantas acciones se ejecutan por inferencia. Por defecto SmolVLA encola un
+    # chunk entero, asi que a 20 Hz el vehiculo avanza 2,5 s a ciegas entre
+    # decisiones. Para una tarea de precision eso importa, y ademas contamina la
+    # medida de latencia: el promedio mezcla una inferencia real con 49 lecturas
+    # de cola. Con n_action_steps=1 cada paso es una inferencia y las dos cosas
+    # quedan limpias.
+    if n_action_steps is not None:
+        config.n_action_steps = n_action_steps
 
     policy = SmolVLAPolicy.from_pretrained(
         CHECKPOINT, config=config, dataset_stats=dataset.meta.stats
@@ -132,11 +141,12 @@ def evaluate_policy(
     camera: Camera,
     device: str | None,
     max_steps: int = MAX_STEPS,
+    n_action_steps: int | None = None,
 ) -> tuple[list[dict], dict]:
     import cv2
     import torch
 
-    policy, preprocessor, postprocessor, device = load_policy(device)
+    policy, preprocessor, postprocessor, device = load_policy(device, n_action_steps)
 
     rows = []
     latencies: list[float] = []
@@ -249,6 +259,7 @@ def evaluate_policy(
 
     inference = {
         "device": device,
+        "n_action_steps": int(policy.config.n_action_steps),
         "latency_mean_ms": float(np.mean(latencies) * 1000),
         "latency_p95_ms": float(np.percentile(latencies, 95) * 1000),
         "effective_hz": float(1.0 / np.mean(latencies)),
@@ -287,6 +298,12 @@ def main() -> None:
     parser.add_argument("--trials", type=int, default=40)
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--max-steps", type=int, default=MAX_STEPS)
+    parser.add_argument(
+        "--n-action-steps",
+        type=int,
+        default=None,
+        help="acciones ejecutadas por inferencia. 1 replanifica cada paso",
+    )
     args = parser.parse_args()
 
     scene = parking.Scene.default()
@@ -298,7 +315,7 @@ def main() -> None:
 
     print(f"\nPolitica destilada sobre los mismos {args.trials} ensayos...")
     policy_rows, inference = evaluate_policy(
-        starts, scene, camera, args.device, args.max_steps
+        starts, scene, camera, args.device, args.max_steps, args.n_action_steps
     )
     student = summarise(policy_rows)
 
@@ -335,7 +352,8 @@ def main() -> None:
         "task_budget_mm": 54.1,
         "trials_raw": {"policy": policy_rows},
     }
-    out = RESULTS / "distillation.json"
+    suffix = "" if args.n_action_steps is None else f"-chunk{args.n_action_steps}"
+    out = RESULTS / f"distillation{suffix}.json"
     out.write_text(json.dumps(payload, indent=2) + "\n")
     print(f"\nGuardado en {out}")
 

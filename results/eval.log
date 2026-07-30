@@ -40,3 +40,22 @@ Loading weights from local directory
   ensayo 35/40: 91.27 mm, agarre no
   ensayo 36/40: 128.51 mm, agarre no
   ensayo 37/40: 56.71 mm, agarre si
+  ensayo 38/40: 37.74 mm, agarre si
+  ensayo 39/40: 26.89 mm, agarre si
+  ensayo 40/40: 23.51 mm, agarre si
+
+==============================================================
+                                  experto          destilada
+--------------------------------------------------------------
+ensayos completados                    40                 40
+asentaron                            100%                38%
+marcador perdido                        0                  0
+error medio (mm)                    4.864             74.509
+error p95 (mm)                      8.256            160.144
+error max (mm)                      8.947            184.431
+guinada media (deg)                 0.301              3.423
+exito de agarre                    100.0%              55.0%
+--------------------------------------------------------------
+latencia de inferencia: 19.8 ms de media (50.5 Hz efectivos) en mps
+
+Guardado en /Users/macuartin/www/robotics/youbot/results/distillation.json

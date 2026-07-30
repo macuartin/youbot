@@ -25,6 +25,25 @@ límite real es 5,4 cm, y sale de la geometría del brazo:
 `arctan(error_lateral / alcance) < tolerancia de la pinza`. Detalle en
 [docs/fase2-servo-visual.md](docs/fase2-servo-visual.md).
 
+### La pregunta nueva
+
+¿Reemplaza una política aprendida a la cadena clásica? Se destiló el controlador
+en SmolVLA usándolo como experto generador de demostraciones, con maestro y
+alumno viendo exactamente los mismos píxeles.
+
+| | Experto clásico | Destilada (450M, 3.000 pasos) |
+|---|---|---|
+| Error de estacionamiento, media | **4,86 mm** | 74,51 mm |
+| Éxito de agarre | **100%** | 55% |
+| Latencia real por decisión | despreciable | **625 ms (1,6 Hz)** |
+
+Aprendió la componente de avance (correlación 0,82 a 0,94) y no las correcciones
+laterales y de giro, que son las que dan la precisión. Con la advertencia
+importante de que el presupuesto de entrenamiento fue el 15% del recomendado, así
+que **esto no establece una limitación del método**, solo lo que se consigue con
+este montaje. La hipótesis abierta y cómo falsarla, en
+[docs/fase4-destilacion.md](docs/fase4-destilacion.md).
+
 ```bash
 uv sync --group dev
 uv run pytest
