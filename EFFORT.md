@@ -18,12 +18,16 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
-| 2 | 2026-07-30 | 2 | | | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
+| 2 | 2026-07-30 | 2 | 29m 55s | 9,55 | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
 | 1 | 2026-07-30 | 0 y 1 | 59m 29s | ≤ 12,95 | 0,05 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, `docs/baseline-2018.md`, esta bitácora. Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
 
 Detalle de la sesión 1, salida de `/cost`: 26m 57s de tiempo de API sobre 59m 29s de reloj de pared, 1406 líneas añadidas y 67 borradas en total, 2 búsquedas web (0,0523 USD). El 83% del consumo ocurrió con más de 150k de contexto, que es la parte cara.
 
-**Por qué el coste es una cota superior y no una medida exacta.** La sesión 1 arrancó con trabajo que no es de esta tesis: crear el repo privado del vault de Obsidian y montarle un auto-commit diario con launchd. Eso ocupó las primeras llamadas, con contexto pequeño, así que su peso en el coste es bajo pero no es cero y no se puede aislar a posteriori. Se registra el total de la sesión, 12,95 USD, con el signo `≤` para dejar claro que la tesis costó eso o menos. A partir de la sesión 2 cada sesión de Claude Code se dedica a una sola cosa y el número sale limpio.
+**Cómo se obtienen las cifras.** Los contadores de `/cost` son acumulados de la sesión de Claude Code, no por tarea. Las filas de esta tabla salen de diferenciar dos lecturas del contador, y eso obliga a una precisión: la sesión 1 y la 2 son en realidad la misma sesión continua de Claude Code, partida aquí por fase.
+
+**Por qué la fila 1 lleva `≤` y la 2 no.** La sesión arrancó con trabajo que no es de esta tesis: crear el repo privado del vault de Obsidian y montarle un auto-commit diario con launchd. Eso ocupó las primeras llamadas, con contexto pequeño, así que su peso es bajo pero no es cero y no se puede aislar a posteriori. La fila 1 lleva por tanto el total de la lectura, 12,95 USD, con `≤` para dejar claro que la tesis costó eso o menos.
+
+La fila 2 sí es exacta: el trabajo ajeno quedó entero antes de la primera lectura, así que la diferencia entre lecturas (22,50 menos 12,95, y 1h 29m 24s menos 59m 29s) es atribuible por completo a la Fase 2. La medición salió mejor de lo que se prometió, no peor.
 
 Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detalle: resolvieron las dos discrepancias de la tabla DH (`alpha4` y `d5`) que en 2018 se quedaron sin zanjar. Cinco céntimos.
 
@@ -31,9 +35,9 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | Métrica | Valor |
 |---|---|
-| Sesiones | 2 |
-| Wall-clock total | 59m 29s más la sesión 2 |
-| Coste total (USD) | ≤ 13,00 más la sesión 2 |
+| Tramos medidos | 2 |
+| Wall-clock total | 1h 29m 24s |
+| Coste total (USD) | ≤ 22,50 |
 | Objetivos de 2018 validados | **5 de 5** |
 | Líneas de código propio validado | 1.914 |
 
@@ -41,10 +45,10 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | | 2017-2020 | 2026 |
 |---|---|---|
-| Elapsed | 34 meses | 2 sesiones en un día |
+| Elapsed | 34 meses | 1h 29m |
 | Objetivos validados | 0 de 5 | 5 de 5 |
 | Líneas de código | 972, ninguna validada | 1.914, con oráculos independientes |
-| Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 13 USD |
+| Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 22,50 USD |
 
 **Esta tabla no es una comparación limpia y no debe presentarse como tal.** Las diferencias que no son la IA:
 
@@ -53,7 +57,9 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 - Los 34 meses son tiempo de calendario de alguien trabajando a jornada completa, no 34 meses de dedicación.
 - El presupuesto de 2018 era una declaración institucional que incluía salarios de director y codirector, no dinero que el estudiante gastara de su bolsillo.
 
-Lo que la tabla sí sostiene, y es suficiente: el trabajo técnico que quedó sin cerrar durante 34 meses se cerró en una hora, y los cinco bugs que lo bloqueaban se identificaron leyendo el código, no ejecutándolo.
+Lo que la tabla sí sostiene, y es suficiente: el trabajo técnico que quedó sin cerrar durante 34 meses se cerró en hora y media, y los cinco bugs que lo bloqueaban se identificaron leyendo el código, no ejecutándolo.
+
+Dato de método que conviene retener para el post: el 86% del consumo ocurrió por encima de 150k de contexto. Lo caro no es el número de llamadas, es la longitud de la sesión. Investigar así tiene una estructura de costes distinta a programar por tareas cortas.
 
 ## Notas de método
 
