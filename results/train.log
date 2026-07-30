@@ -1,0 +1,8 @@
+Reducing the number of VLM layers to 16 ...
+dataset: 120 episodios, 24431 fotogramas
+politica: 99.9M parametros entrenables en mps
+objc[87198]: Class AVFFrameReceiver is implemented in both /Users/macuartin/www/robotics/youbot/.venv/lib/python3.14/site-packages/av/.dylibs/libavdevice.61.3.100.dylib (0x12a6403a8) and /opt/homebrew/Cellar/ffmpeg/8.1.2_1/lib/libavdevice.62.3.102.dylib (0x135e64328). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+objc[87198]: Class AVFAudioReceiver is implemented in both /Users/macuartin/www/robotics/youbot/.venv/lib/python3.14/site-packages/av/.dylibs/libavdevice.61.3.100.dylib (0x12a6403f8) and /opt/homebrew/Cellar/ffmpeg/8.1.2_1/lib/libavdevice.62.3.102.dylib (0x135e64378). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+  paso     1/3000 | loss 0.2656 | 3.54 s/paso
+  paso    10/3000 | loss 0.1890 | 3.08 s/paso
+  paso    20/3000 | loss 0.1260 | 2.90 s/paso
