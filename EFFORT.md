@@ -18,7 +18,7 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
-| 4 | 2026-07-30 | 4 (parcial) | 2h 44m 41s | 24,72 | 0 | Dataset de 120 demostraciones del experto, barrido de resolución, fine-tune de SmolVLA (3.000 pasos, 2h 25m), evaluador en lazo cerrado, post 2 del blog y `docs/fase4-destilacion.md`. **De las 2h 44m, 2h 25m fueron entrenamiento desatendido.** |
+| 4 | 2026-07-30 | 4 | 2h 44m 41s + evaluación | 24,72 + pendiente | 0 | Dataset de 120 demostraciones del experto, barrido de resolución, fine-tune de SmolVLA (3.000 pasos, 2h 25m), evaluador en lazo cerrado, post 2 del blog y `docs/fase4-destilacion.md`. **De las 2h 44m, 2h 25m fueron entrenamiento desatendido.** Cierre de fase: evaluación en lazo cerrado (40 + 20 ensayos), diagnóstico en lazo abierto sobre tres checkpoints, y dos rectificaciones de medición propias. |
 | 3 | 2026-07-30 | 3, más rework de la 2 | 15m 41s | 6,38 | 0,11 | Survey del estado del arte VLA con fuentes primarias (`docs/survey.md`). Cruce del presupuesto de error medido en la Fase 2 con las cifras publicadas: la pregunta de investigación queda respondida sin reentrenar nada. Corrección del criterio de parada de la Fase 2 (la tolerancia estaba por debajo del suelo de ruido). Detector real dentro del lazo, que valida el modelo de ruido de forma independiente. |
 | 2 | 2026-07-30 | 2 | 29m 55s | 9,55 | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
 | 1 | 2026-07-30 | 0 y 1 | 59m 29s | ≤ 12,95 | 0,05 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, `docs/baseline-2018.md`, esta bitácora. Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
@@ -42,6 +42,7 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 | Coste total (USD) | ≤ 53,60 |
 | De los cuales, máquina desatendida | 2h 25m |
 | Objetivos de 2018 validados | **5 de 5** |
+| Fases completadas | 0, 1, 2, 3, 4 y 7 de 7 |
 | Líneas de código propio validado | 1.914 |
 
 ## Comparación con el baseline
@@ -66,6 +67,20 @@ Dato de método que conviene retener para el post: el 87% del consumo ocurrió p
 
 Y una consecuencia incómoda de eso, visible en la fila 4. El entrenamiento de SmolVLA fueron 2h 25m de máquina sola, sin trabajo humano ni de modelo. Pero el coste de tokens de ese tramo fue de 24,72 USD, más que las tres fases anteriores juntas. La razón es que la sesión siguió abierta y cada intercambio, por corto que fuera, arrastraba un contexto de más de 150k. **Esperar dentro de una sesión larga no es gratis.** La lectura correcta no es "reconstruir la tesis costó 53 dólares" sino que una parte creciente de esa cifra la paga la duración de la sesión, no el trabajo hecho en ella.
 
+## Estado al cerrar la sesión del 2026-07-30
+
+Cerradas las fases 0 a 4 y la 7. Pendientes la 5 (preprint) y la 6 (dos de los
+tres posts; el segundo ya está escrito y en draft).
+
+Los cinco objetivos específicos de 2018 quedan validados. La pregunta nueva sobre
+los VLA queda respondida en la literatura (Fase 3) y medida en banco propio
+(Fase 4), con la limitación declarada de que el presupuesto de entrenamiento fue
+el 15% del recomendado.
+
+Experimentos pendientes que no necesitan hardware nuevo y convertirían el
+resultado de la Fase 4 de inconcluso a concluyente: repetir a 640x480 para
+maestro y alumno, y acumulación de gradiente para batch efectivo 32.
+
 ## Notas de método
 
 Los bugs propios también cuentan. En la sesión 1 la primera versión de la
@@ -87,3 +102,22 @@ del trabajo de 2018 no se sostenía. El test que lo comprobaba falló, y en vez 
 relajarlo hubo que reconocer que alcanzar un punto no es agarrar. De ahí salió el
 resultado principal de la fase. Los tests que fallan cuando la hipótesis es
 demasiado cómoda son los que más valen.
+
+En la sesión del 30 de julio hubo dos rectificaciones de medición, y las dos las
+detectó una comprobación que se hizo por desconfianza y no por sospecha concreta.
+
+La primera: reporté una latencia de inferencia de 19,8 ms. Era falsa por un
+factor cincuenta. SmolVLA encola cincuenta acciones por inferencia, así que
+cronometrar la llamada en cada paso promedia una inferencia real con cuarenta y
+nueve lecturas de cola. La cifra correcta es 625 ms.
+
+La segunda: al ver que la política daba errores de decímetros, la reacción
+razonable habría sido reportarlo como resultado. En vez de eso se comprobó
+primero si la política reproducía las acciones del experto sobre los fotogramas
+de su propio entrenamiento. No las reproducía, y eso cambia la interpretación
+por completo: no es acumulación de error en el lazo, es que no aprendió la tarea.
+
+La regla que sale de esto: **antes de publicar un número que confirma lo que
+esperabas, comprueba el instrumento.** Los dos errores iban en la dirección de
+hacer el resultado más presentable, que es exactamente la dirección en la que no
+se revisa.
