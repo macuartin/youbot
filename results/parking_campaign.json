@@ -4,16 +4,16 @@
     "completed": 500,
     "lost_marker": 0,
     "position_error_m": {
-      "mean": 0.0012708576900684607,
-      "p95": 0.0030260330012565405,
-      "max": 0.005368445147078557
+      "mean": 0.0014394601931631632,
+      "p95": 0.003123380315380454,
+      "max": 0.0053409244911599265
     },
     "heading_error_deg": {
-      "mean": 0.12762888405970152,
-      "p95": 0.3071104393947332,
-      "max": 0.5503596921476648
+      "mean": 0.1185799871536658,
+      "p95": 0.3022293067040531,
+      "max": 0.5075363306005645
     },
-    "iterations_mean": 573.522,
+    "iterations_mean": 183.166,
     "meets_parking_criterion": true,
     "grasp_success_rate": 1.0,
     "meets_grasp_criterion": true

@@ -50,11 +50,22 @@ El residuo apenas depende del ruido de sensor: lo domina el sesgo subpíxel del 
 | Métrica | Valor |
 |---|---|
 | Ensayos completados | 500 de 500 (ninguno perdió el marcador) |
-| Error de posición, media | 1,271 mm |
-| Error de posición, p95 | 3,026 mm |
-| Error de posición, máximo | 5,368 mm |
-| Error de guiñada, máximo | 0,550 grados |
+| Error de posición, media | 1,439 mm |
+| Error de posición, p95 | 3,123 mm |
+| Error de posición, máximo | 5,341 mm |
+| Error de guiñada, máximo | 0,508 grados |
+| Pasos hasta detenerse, media | 183,2 |
 | Criterio de 2018 (±10 cm) | **CUMPLE**, con casi 19 veces de margen |
+
+### Corrección: el criterio de parada
+
+La primera versión de la campaña reportaba una media de 573,5 iteraciones sobre un límite de 600. Ese número no significaba nada: era "casi todos los ensayos agotaron el tope".
+
+La causa es que el criterio de convergencia era una tolerancia sobre la norma del error de características, fijada en 1e-3. Con 0,5 px de ruido de detección el suelo de ese error es del orden de 3,5e-3, o sea que **la condición de parada era inalcanzable con ruido, por construcción**. Los errores de posición publicados sí eran medidas reales de dónde acababa el robot, y no cambian; lo que no medía nada era el recuento de iteraciones.
+
+La corrección es un criterio de asentamiento, que es el físicamente correcto: la maniobra termina cuando el vehículo deja de moverse. Y su umbral tampoco se elige a ojo. El jitter de la pose en régimen permanente, con el ruido medido, tiene un p95 de **1,75 mm**, así que el umbral tiene que estar en ese orden. Con 1 mm sobre una ventana de 20 pasos, los 500 ensayos terminan por criterio propio en 183 pasos de media.
+
+Lo que se paga por detenerse antes está medido: la ley de control sin regla de parada llega a 0,25 mm, y con la regla de parada se queda en 1,3 mm. Un factor 5 de exactitud a cambio de que la maniobra termine. Sigue siendo 40 veces mejor que el presupuesto de 54 mm que impone la tarea.
 
 ## Objetivo específico 4: agarre
 

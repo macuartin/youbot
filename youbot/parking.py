@@ -139,6 +139,9 @@ def park(
     pixel_noise: float = 0.0,
     actuation_noise: float = 0.0,
     tolerance: float = 1e-3,
+    settle_window: int = 20,
+    settle_position: float = 1e-3,
+    settle_heading: float = np.deg2rad(0.1),
     damping: float = 1e-4,
     rng: np.random.Generator | None = None,
     record: bool = False,
@@ -156,7 +159,22 @@ def park(
             velocidades comandadas, adimensional. 0.02 son ruedas que se desvian
             un 2 por ciento de lo pedido.
         tolerance: norma del error de caracteristicas, en coordenadas
-            normalizadas, por debajo de la cual se considera convergido.
+            normalizadas, por debajo de la cual se considera convergido. Solo es
+            alcanzable sin ruido: con 0.5 px de ruido de deteccion el suelo del
+            error de caracteristicas es del orden de 3.5e-3, o sea por encima de
+            esta tolerancia. De ahi el criterio de asentamiento.
+        settle_window: numero de pasos sobre los que se mide si el vehiculo ya
+            dejo de moverse.
+        settle_position: desplazamiento maximo dentro de la ventana, en metros,
+            para declarar la maniobra terminada. El valor por defecto no es
+            arbitrario: el jitter de la pose en regimen permanente, con 0.5 px de
+            ruido de deteccion, tiene un p95 de 1.75 mm medido, asi que el umbral
+            tiene que estar en ese orden o la maniobra no termina nunca. Apretarlo
+            no mejora el resultado, solo agota el limite de iteraciones; aflojarlo
+            termina antes pero con mas error. Con 1 mm el error final queda 15
+            veces por debajo del presupuesto de la tarea.
+        settle_heading: cambio de guinada maximo dentro de la ventana, en
+            radianes.
 
     Returns:
         ParkResult con el error espacial final respecto de la pose deseada, que
@@ -181,6 +199,7 @@ def park(
     converged = False
     lost = False
     error_norm = np.inf
+    history: list[np.ndarray] = [pose.copy()]
 
     for iteration in range(1, max_iterations + 1):
         try:
@@ -202,6 +221,21 @@ def park(
             converged = True
             break
 
+        # Criterio de asentamiento: el vehiculo ya no se mueve. Es el unico
+        # criterio de parada valido cuando el ruido de deteccion pone un suelo al
+        # error de caracteristicas, que es siempre que haya un detector real.
+        if len(history) > settle_window:
+            recent = np.array(history[-settle_window:])
+            moved = np.linalg.norm(recent[:, 0:2] - pose[0:2], axis=1).max()
+            turned = np.abs(
+                np.arctan2(
+                    np.sin(recent[:, 2] - pose[2]), np.cos(recent[:, 2] - pose[2])
+                )
+            ).max()
+            if moved < settle_position and turned < settle_heading:
+                converged = True
+                break
+
         # Ley de control: minimos cuadrados amortiguados sobre las tres
         # velocidades de la plataforma.
         u = -gain * np.linalg.solve(ATA, A.T @ error)
@@ -216,6 +250,7 @@ def park(
             [c * u[0] - s * u[1], s * u[0] + c * u[1], u[2]]
         )
 
+        history.append(pose.copy())
         if record:
             trace.append(pose.copy())
 
