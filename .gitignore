@@ -8,3 +8,4 @@ __pycache__/
 results/demonstrations.npz
 results/docking-dataset/
 results/smolvla-docking/
+results/smolvla-docking-step*/

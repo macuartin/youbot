@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import time
 from pathlib import Path
 
@@ -117,6 +118,7 @@ def run(
     device: torch.device,
     benchmark: bool,
     checkpoint_every: int = 500,
+    keep_intermediate: bool = False,
 ) -> dict:
     dataset, policy, loader, preprocessor, _ = build(device, batch_size)
     print(
@@ -163,6 +165,16 @@ def run(
                 CHECKPOINT.mkdir(parents=True, exist_ok=True)
                 policy.save_pretrained(CHECKPOINT)
                 print(f"    checkpoint guardado en el paso {step}")
+                if keep_intermediate:
+                    # Los checkpoints se pisan entre si. Guardar copias
+                    # numeradas es lo que permite medir despues cuanto
+                    # entrenamiento hace falta de verdad, comparando en lazo
+                    # cerrado un modelo a medio entrenar contra el final.
+                    # Cada copia son unos 1,2 GB.
+                    snapshot = CHECKPOINT.parent / f"{CHECKPOINT.name}-step{step}"
+                    if snapshot.exists():
+                        shutil.rmtree(snapshot)
+                    shutil.copytree(CHECKPOINT, snapshot)
             if step >= steps:
                 break
         if benchmark and step >= 20:
@@ -208,6 +220,12 @@ def main() -> None:
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--checkpoint-every", type=int, default=500)
     parser.add_argument(
+        "--keep-intermediate",
+        action="store_true",
+        help="conserva una copia numerada de cada checkpoint (1,2 GB cada una), "
+        "necesario para medir despues cuanto entrenamiento hace falta",
+    )
+    parser.add_argument(
         "--benchmark",
         action="store_true",
         help="corre 20 pasos y proyecta cuanto costaria un entrenamiento completo",
@@ -221,6 +239,7 @@ def main() -> None:
         pick_device(args.device),
         args.benchmark,
         args.checkpoint_every,
+        args.keep_intermediate,
     )
 
 
