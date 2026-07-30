@@ -1,0 +1,57 @@
+[
+  {
+    "sensor_noise_gray_levels": 0.0,
+    "poses_evaluated": 200,
+    "detection_failures": 0,
+    "corner_residual_px": {
+      "mean": 0.4291261205376856,
+      "std": 0.1829619044959388,
+      "p95": 0.7387195414361184,
+      "max": 0.9327499772987394
+    }
+  },
+  {
+    "sensor_noise_gray_levels": 2.0,
+    "poses_evaluated": 200,
+    "detection_failures": 0,
+    "corner_residual_px": {
+      "mean": 0.41943129253231687,
+      "std": 0.17896985501225254,
+      "p95": 0.7135213919648187,
+      "max": 0.9059734229729274
+    }
+  },
+  {
+    "sensor_noise_gray_levels": 5.0,
+    "poses_evaluated": 200,
+    "detection_failures": 0,
+    "corner_residual_px": {
+      "mean": 0.42011471343068907,
+      "std": 0.18067918301799182,
+      "p95": 0.7172515552777268,
+      "max": 1.1406760305457146
+    }
+  },
+  {
+    "sensor_noise_gray_levels": 10.0,
+    "poses_evaluated": 200,
+    "detection_failures": 0,
+    "corner_residual_px": {
+      "mean": 0.4249865951777875,
+      "std": 0.19687707168339563,
+      "p95": 0.7227946358978039,
+      "max": 2.509314214514574
+    }
+  },
+  {
+    "sensor_noise_gray_levels": 20.0,
+    "poses_evaluated": 200,
+    "detection_failures": 0,
+    "corner_residual_px": {
+      "mean": 0.5141235127317665,
+      "std": 0.5353639283144191,
+      "p95": 0.8893384522570542,
+      "max": 5.915649029564436
+    }
+  }
+]

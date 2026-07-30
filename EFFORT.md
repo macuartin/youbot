@@ -18,6 +18,7 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
+| 2 | 2026-07-30 | 2 | | | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
 | 1 | 2026-07-30 | 0 y 1 | 59m 29s | ≤ 12,95 | 0,05 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, `docs/baseline-2018.md`, esta bitácora. Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
 
 Detalle de la sesión 1, salida de `/cost`: 26m 57s de tiempo de API sobre 59m 29s de reloj de pared, 1406 líneas añadidas y 67 borradas en total, 2 búsquedas web (0,0523 USD). El 83% del consumo ocurrió con más de 150k de contexto, que es la parte cara.
@@ -30,19 +31,19 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | Métrica | Valor |
 |---|---|
-| Sesiones | 1 |
-| Wall-clock total | 59m 29s |
-| Coste total (USD) | ≤ 13,00 |
-| Objetivos de 2018 validados | 2 de 5 |
-| Líneas de código propio validado | 940 |
+| Sesiones | 2 |
+| Wall-clock total | 59m 29s más la sesión 2 |
+| Coste total (USD) | ≤ 13,00 más la sesión 2 |
+| Objetivos de 2018 validados | **5 de 5** |
+| Líneas de código propio validado | 1.914 |
 
 ## Comparación con el baseline
 
 | | 2017-2020 | 2026 |
 |---|---|---|
-| Elapsed | 34 meses | 59 minutos |
-| Objetivos validados | 0 de 5 | 2 de 5 |
-| Líneas de código | 972, ninguna validada | 940, con oráculo independiente a 1e-9 |
+| Elapsed | 34 meses | 2 sesiones en un día |
+| Objetivos validados | 0 de 5 | 5 de 5 |
+| Líneas de código | 972, ninguna validada | 1.914, con oráculos independientes |
 | Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 13 USD |
 
 **Esta tabla no es una comparación limpia y no debe presentarse como tal.** Las diferencias que no son la IA:
@@ -62,10 +63,16 @@ en DH clásica. Lo detectó un caso analítico de dos eslabones en el primer
 intento, antes de tocar el modelo real. Duración del error: minutos. Ese
 contraste, y no la ausencia de errores, es lo que hay que medir.
 
-## Notas de método
+En la sesión 2 hubo tres más, todos cazados por un test que falló: la pose del
+marcador con la z hacia la cámara en vez de hacia dentro del plano (el detector
+no lo encontraba), el borde blanco de la plantilla metiendo un desplazamiento
+constante de 42 px, y un solver de agarre hecho a mano que se atascaba en los
+límites articulares hasta que se cambió por `scipy.optimize.least_squares` con
+cotas.
 
-Los bugs propios también cuentan. En la sesión 2 la primera versión de la
-dinámica mezcló la recursión de Newton-Euler para DH modificada con cinemática
-en DH clásica. Lo detectó un caso analítico de dos eslabones en el primer
-intento, antes de tocar el modelo real. Duración del error: minutos. Ese
-contraste, y no la ausencia de errores, es lo que hay que medir.
+Y un cuarto de otra clase, que no es un bug sino un error de modelado: el primer
+criterio de agarre solo miraba la posición, y con ese criterio la premisa entera
+del trabajo de 2018 no se sostenía. El test que lo comprobaba falló, y en vez de
+relajarlo hubo que reconocer que alcanzar un punto no es agarrar. De ahí salió el
+resultado principal de la fase. Los tests que fallan cuando la hipótesis es
+demasiado cómoda son los que más valen.

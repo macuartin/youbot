@@ -102,6 +102,53 @@ INERTIA_DIAG = np.array(
 #: Aceleracion de la gravedad expresada en el frame base, m/s^2.
 GRAVITY = np.array([0.0, 0.0, -9.81])
 
+#: Origen de la cadena DH del brazo, expresado en el frame de la plataforma.
+#:
+#: Del URDF oficial youbot_description: el brazo se monta con
+#: origin xyz="0.143 0 0.046" respecto de base_link.
+#:
+#: Aproximacion declarada: el URDF descompone el primer eslabon en dos offsets
+#: (arm_joint_1 a 0.096 de altura y arm_joint_2 a 0.019 mas), lo que suma 0.115,
+#: mientras que la tabla DH lo agrupa todo en d1 = 0.147. Quedan unos 3 cm sin
+#: reconciliar entre las dos descripciones. No afecta a los resultados de
+#: sensibilidad de este trabajo, que miden como se degrada el agarre al variar
+#: el error de estacionamiento: un offset constante desplaza la pose nominal de
+#: agarre pero no la pendiente de la degradacion.
+ARM_MOUNT = np.array([0.143, 0.0, 0.046])
+
+#: Montaje de la camara en el frame de la plataforma, mirando hacia adelante.
+#:
+#: Decision de diseno de este trabajo, no un dato del robot: el anteproyecto de
+#: 2018 preveia una camara industrial uEye CP pero no especificaba donde se
+#: montaba. Se coloca al frente de la plataforma sobre una torre, que es un
+#: accesorio que el propio youbot_description contempla
+#: (urdf/misc/camera_tower.urdf.xacro).
+#:
+#: La altura coincide con la del marcador de la estacion. No es casualidad ni
+#: conveniencia del experimento: en una instalacion real el marcador se coloca a
+#: la altura de la camara del AGV, para que la aproximacion frontal deje el
+#: marcador centrado en la imagen y no en el borde.
+#:
+#: El desplazamiento hacia adelante es pequeno a proposito. Con la camara muy
+#: adelantada queda demasiado cerca del marcador al estacionar, este ocupa casi
+#: todo el sensor y la maniobra pierde el marcador de vista ante cualquier
+#: desviacion inicial. A 10 cm del centro de la plataforma la camara ve el
+#: marcador a 45 cm en la pose de estacionamiento.
+CAMERA_MOUNT = np.array([0.100, 0.0, 0.350])
+
+#: Rotacion del frame de la camara al frame de la plataforma.
+#:
+#: Convencion optica estandar: z de la camara apunta hacia donde mira (el +x de
+#: la plataforma), x a la derecha de la imagen (-y de la plataforma) e y hacia
+#: abajo (-z de la plataforma).
+CAMERA_ROTATION = np.array(
+    [
+        [0.0, 0.0, 1.0],
+        [-1.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0],
+    ]
+)
+
 
 def inertia_tensor(link: int) -> np.ndarray:
     """Tensor de inercia 3x3 del eslabon indicado, respecto de su centro de masa."""

@@ -12,15 +12,23 @@ En 2026 se retoma con dos objetivos.
 
 | Objetivo de 2018 | Estado |
 |---|---|
-| OE1 Control visual del AGV con marcador | pendiente |
+| OE1 Control visual del AGV con marcador | **validado**, IBVS con detección real de ArUco |
 | OE2 Modelo cinemático y dinámico Newton-Euler | **validado** contra oráculo independiente a 1e-9 |
 | OE3 Control articular por cinemática inversa | **validado**, seguimiento por debajo de 1 mm |
-| OE4 Validación pick & place (95% de agarre) | pendiente |
-| OE5 Validación de estacionamiento (±10 cm) | pendiente |
+| OE4 Validación pick & place (95% de agarre) | **validado**, 100% sobre 500 ensayos |
+| OE5 Validación de estacionamiento (±10 cm) | **validado**, 5,4 mm de error máximo |
+
+Los cinco objetivos específicos de 2018 están cerrados. Con un hallazgo que
+contradice al anteproyecto: el criterio de ±10 cm que el propio trabajo se fijó
+es 1,8 veces más laxo de lo que la tarea de pick & place admite en lateral. El
+límite real es 5,4 cm, y sale de la geometría del brazo:
+`arctan(error_lateral / alcance) < tolerancia de la pinza`. Detalle en
+[docs/fase2-servo-visual.md](docs/fase2-servo-visual.md).
 
 ```bash
 uv sync --group dev
 uv run pytest
+uv run python experiments/parking_campaign.py
 ```
 
 El oráculo es [`roboticstoolbox-python`](https://github.com/petercorke/robotics-toolbox-python): se construye el mismo robot desde la misma tabla DH y se comparan cinemática directa, los dos jacobianos, torques de gravedad, matriz de masa y Newton-Euler completo sobre 25 configuraciones aleatorias. Los tests que no dependen de él siguen corriendo si no está instalado.
@@ -29,13 +37,15 @@ El oráculo es [`roboticstoolbox-python`](https://github.com/petercorke/robotics
 
 ```
 youbot/     núcleo Python 3 sin ROS: cinemática, dinámica, trayectorias, servo visual
-docs/       baseline histórico, survey del estado del arte
+docs/       baseline histórico, resultados por fase, survey del estado del arte
+experiments/ campañas reproducibles que generan results/
+results/    salidas de las campañas: JSON y figuras
 paper/      preprint
 legacy/     los paquetes ROS 1 Kinetic / Python 2.7 de 2020, tal cual quedaron
 EFFORT.md   bitácora de esfuerzo
 ```
 
-`legacy/` no se toca. Es el objeto de estudio: ahí viven los tres bugs que mataron el trabajo original, documentados en [docs/baseline-2018.md](docs/baseline-2018.md).
+`legacy/` no se toca. Es el objeto de estudio: ahí viven los cinco bugs que mataron el trabajo original, documentados en [docs/baseline-2018.md](docs/baseline-2018.md).
 
 ## Contacto
 
