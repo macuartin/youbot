@@ -42,27 +42,40 @@ def pick_device(requested: str | None = None) -> torch.device:
     return torch.device("cpu")
 
 
-def build(device: torch.device, batch_size: int):
-    """Carga el dataset y la politica, ya emparejados."""
-    from lerobot.datasets.lerobot_dataset import LeRobotDataset
+def make_config(dataset_meta, device: torch.device | str):
+    """Construye el SmolVLAConfig a partir de las features del dataset.
+
+    Hay que construirlo a mano y pasarlo explicitamente a from_pretrained, en vez
+    de dejar que lo lea del config.json guardado. En Python 3.14, draccus no
+    consigue parsear el tipo `Dict[str, PolicyFeature] | None` de los campos de
+    features y revienta con "is not callable" al registrar los argumentos. Pasar
+    el config ya construido salta ese camino por completo.
+    """
     from lerobot.policies.factory import dataset_to_policy_features
     from lerobot.policies.smolvla.configuration_smolvla import SmolVLAConfig
-    from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
-    from lerobot.policies.smolvla.processor_smolvla import (
-        make_smolvla_pre_post_processors,
-    )
     from lerobot.configs.types import FeatureType
 
-    metadata_only = LeRobotDataset(repo_id="macuartin/youbot-docking", root=DATASET)
-    features = dataset_to_policy_features(metadata_only.meta.features)
+    features = dataset_to_policy_features(dataset_meta.features)
     output_features = {k: v for k, v in features.items() if v.type is FeatureType.ACTION}
     input_features = {k: v for k, v in features.items() if k not in output_features}
 
-    config = SmolVLAConfig(
+    return SmolVLAConfig(
         input_features=input_features,
         output_features=output_features,
         device=str(device),
     )
+
+
+def build(device: torch.device, batch_size: int):
+    """Carga el dataset y la politica, ya emparejados."""
+    from lerobot.datasets.lerobot_dataset import LeRobotDataset
+    from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+    from lerobot.policies.smolvla.processor_smolvla import (
+        make_smolvla_pre_post_processors,
+    )
+
+    metadata_only = LeRobotDataset(repo_id="macuartin/youbot-docking", root=DATASET)
+    config = make_config(metadata_only.meta, device)
 
     # El dataset tiene que servir un chunk de acciones por muestra, no una sola.
     delta_timestamps = {

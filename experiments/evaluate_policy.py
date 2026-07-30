@@ -41,6 +41,13 @@ SEED = 20181207
 MAX_STEPS = 600
 DT = 0.05
 
+#: El mismo criterio de parada que usa el experto: la maniobra termina cuando el
+#: vehiculo deja de moverse. Se aplica igual a los dos brazos; darle al experto
+#: una regla de parada y a la politica no, o al reves, sesgaria la comparacion.
+SETTLE_WINDOW = 20
+SETTLE_POSITION = 1e-3
+SETTLE_HEADING = np.deg2rad(0.1)
+
 
 def sample_starts(trials: int, scene: parking.Scene, seed: int = SEED) -> np.ndarray:
     """Las mismas poses iniciales para los dos brazos del experimento."""
@@ -54,7 +61,12 @@ def sample_starts(trials: int, scene: parking.Scene, seed: int = SEED) -> np.nda
     )
 
 
-def evaluate_expert(starts: np.ndarray, scene: parking.Scene, camera: Camera) -> list[dict]:
+def evaluate_expert(
+    starts: np.ndarray,
+    scene: parking.Scene,
+    camera: Camera,
+    max_steps: int = MAX_STEPS,
+) -> list[dict]:
     rows = []
     for i, start in enumerate(starts):
         tic = time.time()
@@ -66,7 +78,7 @@ def evaluate_expert(starts: np.ndarray, scene: parking.Scene, camera: Camera) ->
             sensor_noise=SENSOR_NOISE,
             actuation_noise=ACTUATION_NOISE,
             rng=np.random.default_rng(SEED + i),
-            max_iterations=MAX_STEPS,
+            max_iterations=max_steps,
         )
         rows.append(
             {
@@ -94,22 +106,32 @@ def load_policy(device: str | None):
         make_smolvla_pre_post_processors,
     )
 
+    from train_policy import make_config
+
     if device is None:
         device = "mps" if torch.backends.mps.is_available() else "cpu"
 
-    policy = SmolVLAPolicy.from_pretrained(CHECKPOINT)
+    dataset = LeRobotDataset(repo_id="macuartin/youbot-docking", root=DATASET)
+    config = make_config(dataset.meta, device)
+
+    policy = SmolVLAPolicy.from_pretrained(
+        CHECKPOINT, config=config, dataset_stats=dataset.meta.stats
+    )
     policy.to(device)
     policy.eval()
 
-    dataset = LeRobotDataset(repo_id="macuartin/youbot-docking", root=DATASET)
     preprocessor, postprocessor = make_smolvla_pre_post_processors(
-        policy.config, dataset_stats=dataset.meta.stats
+        config, dataset_stats=dataset.meta.stats
     )
     return policy, preprocessor, postprocessor, device
 
 
 def evaluate_policy(
-    starts: np.ndarray, scene: parking.Scene, camera: Camera, device: str | None
+    starts: np.ndarray,
+    scene: parking.Scene,
+    camera: Camera,
+    device: str | None,
+    max_steps: int = MAX_STEPS,
 ) -> tuple[list[dict], dict]:
     import cv2
     import torch
@@ -126,10 +148,12 @@ def evaluate_policy(
         policy.reset()
 
         lost = False
+        settled = False
+        history: list[np.ndarray] = [pose.copy()]
         tic = time.time()
         step = 0
 
-        for step in range(1, MAX_STEPS + 1):
+        for step in range(1, max_steps + 1):
             camera_pose = parking.camera_pose_matrix(pose)
             try:
                 image = render_marker_view(
@@ -184,6 +208,19 @@ def evaluate_policy(
                     u_applied[2],
                 ]
             )
+            history.append(pose.copy())
+
+            if len(history) > SETTLE_WINDOW:
+                recent = np.array(history[-SETTLE_WINDOW:])
+                moved = np.linalg.norm(recent[:, 0:2] - pose[0:2], axis=1).max()
+                turned = np.abs(
+                    np.arctan2(
+                        np.sin(recent[:, 2] - pose[2]), np.cos(recent[:, 2] - pose[2])
+                    )
+                ).max()
+                if moved < SETTLE_POSITION and turned < SETTLE_HEADING:
+                    settled = True
+                    break
 
         desired = np.asarray(scene.desired_base_pose, dtype=float)
         heading = np.arctan2(
@@ -192,7 +229,7 @@ def evaluate_policy(
         rows.append(
             {
                 "lost_marker": bool(lost),
-                "settled": False,
+                "settled": bool(settled),
                 "steps": int(step),
                 "position_error_mm": float(
                     np.linalg.norm(pose[0:2] - desired[0:2]) * 1000
@@ -240,6 +277,7 @@ def summarise(rows: list[dict]) -> dict:
             "max": float(headings.max()),
         },
         "steps_mean": float(np.mean([r["steps"] for r in valid])),
+        "settled_fraction": float(np.mean([r["settled"] for r in valid])),
         "grasp_success_rate": float(np.mean([r["grasp"] for r in valid])),
     }
 
@@ -248,6 +286,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trials", type=int, default=40)
     parser.add_argument("--device", type=str, default=None)
+    parser.add_argument("--max-steps", type=int, default=MAX_STEPS)
     args = parser.parse_args()
 
     scene = parking.Scene.default()
@@ -255,10 +294,12 @@ def main() -> None:
     starts = sample_starts(args.trials, scene)
 
     print(f"Experto clasico sobre {args.trials} ensayos...")
-    expert = summarise(evaluate_expert(starts, scene, camera))
+    expert = summarise(evaluate_expert(starts, scene, camera, args.max_steps))
 
     print(f"\nPolitica destilada sobre los mismos {args.trials} ensayos...")
-    policy_rows, inference = evaluate_policy(starts, scene, camera, args.device)
+    policy_rows, inference = evaluate_policy(
+        starts, scene, camera, args.device, args.max_steps
+    )
     student = summarise(policy_rows)
 
     print("\n" + "=" * 62)
@@ -271,6 +312,7 @@ def main() -> None:
         print(f"{label:22s} {left:>18s} {right:>18s}")
 
     row("ensayos completados", expert["completed"], student["completed"], "{:d}")
+    row("asentaron", expert.get("settled_fraction", 0) * 100, student.get("settled_fraction", 0) * 100, "{:.0f}%")
     row("marcador perdido", expert["lost_marker"], student["lost_marker"], "{:d}")
     if expert.get("position_error_mm") and student.get("position_error_mm"):
         row("error medio (mm)", expert["position_error_mm"]["mean"], student["position_error_mm"]["mean"])

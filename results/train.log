@@ -6,3 +6,56 @@ objc[87198]: Class AVFAudioReceiver is implemented in both /Users/macuartin/www/
   paso     1/3000 | loss 0.2656 | 3.54 s/paso
   paso    10/3000 | loss 0.1890 | 3.08 s/paso
   paso    20/3000 | loss 0.1260 | 2.90 s/paso
+  paso    30/3000 | loss 0.1346 | 3.23 s/paso
+  paso    40/3000 | loss 0.1166 | 3.05 s/paso
+  paso    50/3000 | loss 0.1323 | 3.03 s/paso
+  paso    60/3000 | loss 0.1306 | 2.96 s/paso
+  paso    70/3000 | loss 0.0922 | 2.90 s/paso
+  paso    80/3000 | loss 0.1068 | 2.86 s/paso
+  paso    90/3000 | loss 0.1079 | 2.91 s/paso
+  paso   100/3000 | loss 0.1724 | 2.91 s/paso
+  paso   110/3000 | loss 0.0975 | 2.83 s/paso
+  paso   120/3000 | loss 0.1114 | 2.92 s/paso
+  paso   130/3000 | loss 0.1015 | 3.08 s/paso
+  paso   140/3000 | loss 0.1122 | 2.89 s/paso
+  paso   150/3000 | loss 0.1033 | 2.89 s/paso
+  paso   160/3000 | loss 0.1168 | 2.83 s/paso
+  paso   170/3000 | loss 0.0961 | 2.82 s/paso
+  paso   180/3000 | loss 0.0914 | 2.94 s/paso
+  paso   190/3000 | loss 0.0963 | 3.07 s/paso
+  paso   200/3000 | loss 0.0809 | 3.28 s/paso
+  paso   210/3000 | loss 0.0917 | 3.03 s/paso
+  paso   220/3000 | loss 0.1314 | 3.20 s/paso
+  paso   230/3000 | loss 0.1456 | 3.19 s/paso
+  paso   240/3000 | loss 0.0982 | 3.05 s/paso
+  paso   250/3000 | loss 0.1082 | 3.12 s/paso
+  paso   260/3000 | loss 0.0873 | 3.18 s/paso
+  paso   270/3000 | loss 0.1136 | 2.96 s/paso
+  paso   280/3000 | loss 0.0921 | 3.11 s/paso
+  paso   290/3000 | loss 0.0983 | 3.07 s/paso
+  paso   300/3000 | loss 0.0994 | 2.99 s/paso
+  paso   310/3000 | loss 0.1119 | 2.97 s/paso
+  paso   320/3000 | loss 0.1063 | 3.04 s/paso
+  paso   330/3000 | loss 0.0979 | 2.92 s/paso
+  paso   340/3000 | loss 0.0902 | 2.96 s/paso
+  paso   350/3000 | loss 0.0905 | 2.87 s/paso
+  paso   360/3000 | loss 0.0725 | 2.97 s/paso
+  paso   370/3000 | loss 0.0783 | 2.85 s/paso
+  paso   380/3000 | loss 0.0769 | 2.88 s/paso
+  paso   390/3000 | loss 0.1042 | 2.97 s/paso
+  paso   400/3000 | loss 0.0674 | 2.84 s/paso
+  paso   410/3000 | loss 0.1164 | 2.93 s/paso
+  paso   420/3000 | loss 0.1174 | 2.86 s/paso
+  paso   430/3000 | loss 0.0886 | 3.33 s/paso
+  paso   440/3000 | loss 0.0806 | 3.10 s/paso
+  paso   450/3000 | loss 0.0886 | 3.06 s/paso
+  paso   460/3000 | loss 0.0929 | 3.25 s/paso
+  paso   470/3000 | loss 0.0841 | 2.99 s/paso
+  paso   480/3000 | loss 0.0982 | 3.11 s/paso
+  paso   490/3000 | loss 0.0926 | 3.11 s/paso
+  paso   500/3000 | loss 0.0979 | 3.16 s/paso
+    checkpoint guardado en el paso 500
+  paso   510/3000 | loss 0.0729 | 3.35 s/paso
+  paso   520/3000 | loss 0.0904 | 3.27 s/paso
+  paso   530/3000 | loss 0.0893 | 3.17 s/paso
+  paso   540/3000 | loss 0.1054 | 3.44 s/paso

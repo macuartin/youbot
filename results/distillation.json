@@ -1,0 +1,65 @@
+{
+  "expert": {
+    "trials": 2,
+    "lost_marker": 0,
+    "completed": 2,
+    "position_error_mm": {
+      "mean": 3.4279335188879916,
+      "p95": 3.605792539742684,
+      "max": 3.6255546531709832
+    },
+    "heading_error_deg": {
+      "mean": 0.0862710169410032,
+      "max": 0.12876307488576444
+    },
+    "steps_mean": 120.0,
+    "settled_fraction": 0.0,
+    "grasp_success_rate": 1.0
+  },
+  "distilled": {
+    "trials": 2,
+    "lost_marker": 0,
+    "completed": 2,
+    "position_error_mm": {
+      "mean": 107.3686875996766,
+      "p95": 112.72867343738413,
+      "max": 113.32422741935163
+    },
+    "heading_error_deg": {
+      "mean": 1.8406520066472911,
+      "max": 2.460586305248368
+    },
+    "steps_mean": 120.0,
+    "settled_fraction": 0.0,
+    "grasp_success_rate": 0.0
+  },
+  "inference": {
+    "device": "mps",
+    "latency_mean_ms": 93.54386329650879,
+    "latency_p95_ms": 10.967946052551266,
+    "effective_hz": 10.6901721263133
+  },
+  "task_budget_mm": 54.1,
+  "trials_raw": {
+    "policy": [
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 120,
+        "position_error_mm": 113.32422741935163,
+        "heading_error_deg": 1.2207177080462142,
+        "seconds": 15.850237131118774,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 120,
+        "position_error_mm": 101.4131477800016,
+        "heading_error_deg": 2.460586305248368,
+        "seconds": 6.9920878410339355,
+        "grasp": false
+      }
+    ]
+  }
+}
