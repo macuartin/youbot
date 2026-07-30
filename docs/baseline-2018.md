@@ -51,9 +51,9 @@ El plan de trabajo firmado en agosto de 2018 declara el avance auto-reportado. L
 
 El código de 2018-2019 no sobrevive en control de versiones. Lo que hay en `legacy/` es la reescritura de 2020 sobre ROS 1 Kinetic y Python 2.7.
 
-## Los tres bugs
+## Los cinco bugs
 
-Ninguno es conceptual. Los tres son de implementación, y los tres son del tipo que un revisor cansado no ve.
+Ninguno es conceptual. Los cinco son de implementación, y los cinco son silenciosos: el programa corre y devuelve números. Los tres primeros se detectaron leyendo el código; el cuarto y el quinto aparecieron al reconstruir el modelo con la documentación de referencia en la mano.
 
 ### 1. El jacobiano en dtype entero
 
@@ -99,10 +99,58 @@ vd = np.dot(...) + np.dot(H, Qdd[i]) + coriolis + centripeta + centrifuga
 
 Los torques salen sesgados en proporción a la aceleración articular. El error es silencioso: los números parecen razonables.
 
-## Discrepancias del modelo pendientes de resolver
+### 4. Centros de masa en centímetros usados como metros
 
-- `alpha4`: el Informe de Avance #1 tabula 270 grados, el código usa `1.57079` (90 grados).
-- `d5`: `0.2175` en `legacy/youbot_bringup/config/youbot_mechanics.yaml` y en el Informe de Avance, pero `0.113` en el bloque de prueba de `homogeneus_matrix.py`.
+`legacy/youbot_mechanics/src/youbot_mechanics/dynamics_operators.py`, función `centerOfMassDistance`.
+
+La tabla de parámetros físicos del Informe de Avance #1 tabula los centros de masa sin declarar unidades. El eslabón 2 aparece con `Sx = 11.397`. Leído como metros, eso pone el centro de masa de un eslabón a once metros de su articulación, en un brazo cuya longitud total extendida es de 65,45 cm. La única lectura físicamente posible es centímetros: así los cinco eslabones caen dentro de su propia geometría.
+
+El código toma los valores crudos:
+
+```python
+s = np.array([Params[0, 1], Params[0, 2], Params[0, 3]])
+```
+
+o sea con un factor 100 de error en los brazos de palanca de toda la dinámica.
+
+### 5. `a` y `alpha` transpuestos entre la tabla y quien la consume
+
+`legacy/youbot_mechanics/src/youbot_mechanics/homogeneus_matrix.py`
+
+La función lee `alpha = DHi[2]` y `a = DHi[3]`, o sea espera filas en orden `(theta, d, alpha, a, sigma)`. Pero la tabla que le pasan, tanto en su propio bloque de prueba como en `legacy/youbot_bringup/config/youbot_mechanics.yaml`, está en orden `(theta, d, a, alpha)`:
+
+```python
+DH = [[0, 0.147, 0.033, np.pi/2, 0], ...]
+```
+
+Con esa transposición el eslabón 1 queda con `alpha = 0.033 rad` y `a = 1.5708 m`: un brazo de metro y medio. La forma de la matriz homogénea que construye la función es correcta; lo que está mal es el orden en que se la alimenta.
+
+El repo `newton-euler-robotic-model`, escrito en septiembre de 2020 con SymPy, sí es consistente: declara `[type, theta, d, a, alpha]` y lee `alpha = DHi[4]`, `a = DHi[3]`. La derivación simbólica estaba bien; la numérica no.
+
+### Bug latente: mezcla de frames en la cinemática inversa
+
+`inverse_kinematic.py` resuelve `pinv(J) @ Xdif + Q0` usando el jacobiano en frame del efector final (formulación de Paul), pero `Xdif` viene del planificador de trayectorias, que trabaja en coordenadas cartesianas de la base. Son dos frames distintos. Nunca llegó a manifestarse porque el servicio ROS que debía llamar a esta función se quedó en `return True`.
+
+## Discrepancias del modelo, resueltas
+
+Ambas se zanjan contra [kirillin/youbot_arm_kinematics](https://github.com/kirillin/youbot_arm_kinematics), que publica `DH_A = (0.033, 0.155, 0.135, 0, 0)`, `DH_ALPHA = (pi/2, 0, 0, pi/2, 0)` y `DH_D = (0.147, 0, 0, 0, 0.218)`.
+
+- `alpha4`: el Informe de Avance #1 tabula 270 grados y el código usa 90. **Gana el código**: la referencia publica `pi/2`. Los 270 grados son un error de transcripción del informe.
+- `d5`: **0,2175 m**, no los 0,113 del bloque de prueba de `homogeneus_matrix.py`. Hay además una comprobación aritmética independiente que no necesita fuente externa: `0.147 + 0.155 + 0.135 + 0.2175 = 0.6545`, exactamente la longitud extendida de 65,45 cm que declara el propio Informe de Avance.
+
+## Detalle de época
+
+El generador de trayectorias de 2020 ya no ejecuta en NumPy 2: hace `traj[j+p, x] = ax[i] * ...` donde `ax[i]` es un array de forma `(1,)`, y asignar una secuencia a una posición escalar dejó de estar permitido. No es un error de formulación, es código que envejeció.
+
+## Veredicto 2026
+
+La pregunta que quedó abierta en 2018 era si la matemática del Informe de Avance era correcta. La respuesta, ahora verificada: **sí**.
+
+El modelo reconstruido en `youbot/` coincide con `roboticstoolbox-python` (Peter Corke) como oráculo independiente a tolerancia 1e-9, sobre 25 configuraciones articulares aleatorias, en cinemática directa, jacobiano en frame base, jacobiano en frame del efector, torques de gravedad, matriz de masa y Newton-Euler completo con velocidad y aceleración no nulas. El generador de trayectorias de 2020 coincide coeficiente a coeficiente con `scipy.interpolate.CubicSpline`.
+
+La formulación de 2018 era correcta. Lo que falló fueron cinco errores de implementación, ninguno de los cuales produce un mensaje de error.
+
+Nota metodológica honesta: la reconstrucción de 2026 también tuvo su bug, y del mismo tipo. La primera versión de la dinámica mezcló la recursión de Newton-Euler de Craig, que asume DH modificada con el eje de la articulación en Z_i, con una cinemática en DH clásica, donde el eje está en Z_{i-1}. La diferencia está en tres detalles: dónde se suma la velocidad articular, en qué frame se expresa el vector entre orígenes, y sobre qué eje se proyecta el torque. Un brazo de prueba de dos eslabones con masas puntuales, cuya matriz de masa se calcula a mano en dos líneas, lo delató en el primer intento: I11 debía valer 5 y valía 1. La diferencia con 2018 no es que ahora no se cometan errores. Es que el error duró minutos en vez de años, porque había un oráculo contra el que comparar y un caso analítico que lo acorrala.
 
 ## Coste declarado
 

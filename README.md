@@ -13,10 +13,17 @@ En 2026 se retoma con dos objetivos.
 | Objetivo de 2018 | Estado |
 |---|---|
 | OE1 Control visual del AGV con marcador | pendiente |
-| OE2 Modelo cinemático y dinámico Newton-Euler | pendiente |
-| OE3 Control articular por cinemática inversa | pendiente |
+| OE2 Modelo cinemático y dinámico Newton-Euler | **validado** contra oráculo independiente a 1e-9 |
+| OE3 Control articular por cinemática inversa | **validado**, seguimiento por debajo de 1 mm |
 | OE4 Validación pick & place (95% de agarre) | pendiente |
 | OE5 Validación de estacionamiento (±10 cm) | pendiente |
+
+```bash
+uv sync --group dev
+uv run pytest
+```
+
+El oráculo es [`roboticstoolbox-python`](https://github.com/petercorke/robotics-toolbox-python): se construye el mismo robot desde la misma tabla DH y se comparan cinemática directa, los dos jacobianos, torques de gravedad, matriz de masa y Newton-Euler completo sobre 25 configuraciones aleatorias. Los tests que no dependen de él siguen corriendo si no está instalado.
 
 ## Estructura
 

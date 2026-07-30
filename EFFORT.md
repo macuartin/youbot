@@ -18,13 +18,22 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
-| 1 | 2026-07-30 | 0 | | | 0 | Revisión del material de 2018-2020, diagnóstico de los 3 bugs bloqueantes, plan de 7 fases, rama `rescate-2026`, `docs/baseline-2018.md`, esta bitácora. |
+| 1 | 2026-07-30 | 0 | | | 0 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, rama `rescate-2026`, `docs/baseline-2018.md`, esta bitácora. |
+| 2 | 2026-07-30 | 1 | | | 0 | Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes, con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
 
 ## Acumulado
 
 | Métrica | Valor |
 |---|---|
-| Sesiones | 1 |
+| Sesiones | 2 |
 | Wall-clock total | pendiente |
 | Coste total (USD) | pendiente |
-| Objetivos de 2018 validados | 0 de 5 |
+| Objetivos de 2018 validados | 2 de 5 |
+
+## Notas de método
+
+Los bugs propios también cuentan. En la sesión 2 la primera versión de la
+dinámica mezcló la recursión de Newton-Euler para DH modificada con cinemática
+en DH clásica. Lo detectó un caso analítico de dos eslabones en el primer
+intento, antes de tocar el modelo real. Duración del error: minutos. Ese
+contraste, y no la ausencia de errores, es lo que hay que medir.
