@@ -1,0 +1,890 @@
+{
+  "monte_carlo": {
+    "trials": 500,
+    "completed": 500,
+    "lost_marker": 0,
+    "position_error_m": {
+      "mean": 0.0014394601931631632,
+      "p95": 0.003123380315380454,
+      "max": 0.0053409244911599265
+    },
+    "heading_error_deg": {
+      "mean": 0.1185799871536658,
+      "p95": 0.3022293067040531,
+      "max": 0.5075363306005645
+    },
+    "iterations_mean": 183.166,
+    "meets_parking_criterion": true,
+    "grasp_success_rate": 1.0,
+    "meets_grasp_criterion": true
+  },
+  "sensitivity": {
+    "reach_m": 0.30700000000000005,
+    "approach_tolerance_deg": 10.0,
+    "analytic_lateral_limit_m": 0.05413238307749876,
+    "measured_lateral_limit_m": 0.055,
+    "measured_yaw_limit_deg": 24.000000000000004,
+    "lateral": [
+      {
+        "error_m": 0.0,
+        "approach_error_deg": 0.0007478959677837006,
+        "predicted_deg": 0.0,
+        "position_residual_mm": 5.1929387489443036e-05,
+        "success": true
+      },
+      {
+        "error_m": 0.005,
+        "approach_error_deg": 0.9250209818897086,
+        "predicted_deg": 0.9330735232184578,
+        "position_residual_mm": 0.04315373480346634,
+        "success": true
+      },
+      {
+        "error_m": 0.01,
+        "approach_error_deg": 1.849563840118654,
+        "predicted_deg": 1.8656523918325172,
+        "position_residual_mm": 0.08625084140742714,
+        "success": true
+      },
+      {
+        "error_m": 0.015,
+        "approach_error_deg": 2.7731529905513512,
+        "predicted_deg": 2.7972435228340804,
+        "position_residual_mm": 0.12923509003260014,
+        "success": true
+      },
+      {
+        "error_m": 0.02,
+        "approach_error_deg": 3.6953148828974514,
+        "predicted_deg": 3.727356963945517,
+        "position_residual_mm": 0.17205055525879995,
+        "success": true
+      },
+      {
+        "error_m": 0.025,
+        "approach_error_deg": 4.615580636619825,
+        "predicted_deg": 4.6555074280136175,
+        "position_residual_mm": 0.2146423470410265,
+        "success": true
+      },
+      {
+        "error_m": 0.03,
+        "approach_error_deg": 5.53348727830178,
+        "predicted_deg": 5.581215790749025,
+        "position_residual_mm": 0.2569566844576118,
+        "success": true
+      },
+      {
+        "error_m": 0.035,
+        "approach_error_deg": 6.448578062526793,
+        "predicted_deg": 6.504010540431716,
+        "position_residual_mm": 0.29894037914006205,
+        "success": true
+      },
+      {
+        "error_m": 0.04,
+        "approach_error_deg": 7.360406124947576,
+        "predicted_deg": 7.423429168896679,
+        "position_residual_mm": 0.34054209945297503,
+        "success": true
+      },
+      {
+        "error_m": 0.045,
+        "approach_error_deg": 8.268533131861005,
+        "predicted_deg": 8.339019493950188,
+        "position_residual_mm": 0.38171298414543636,
+        "success": true
+      },
+      {
+        "error_m": 0.05,
+        "approach_error_deg": 9.17253215870744,
+        "predicted_deg": 9.250340904327112,
+        "position_residual_mm": 0.4224048446348571,
+        "success": true
+      },
+      {
+        "error_m": 0.055,
+        "approach_error_deg": 10.071987969246901,
+        "predicted_deg": 10.156965519362291,
+        "position_residual_mm": 0.46257251055162374,
+        "success": false
+      },
+      {
+        "error_m": 0.06,
+        "approach_error_deg": 10.966498373725422,
+        "predicted_deg": 11.058479256691198,
+        "position_residual_mm": 0.5021725354996202,
+        "success": false
+      },
+      {
+        "error_m": 0.065,
+        "approach_error_deg": 11.855675108201227,
+        "predicted_deg": 11.954482802493073,
+        "position_residual_mm": 0.5411637617837228,
+        "success": false
+      },
+      {
+        "error_m": 0.07,
+        "approach_error_deg": 12.73914453574298,
+        "predicted_deg": 12.84459248001938,
+        "position_residual_mm": 0.579507966245429,
+        "success": false
+      },
+      {
+        "error_m": 0.075,
+        "approach_error_deg": 13.616548538446569,
+        "predicted_deg": 13.728441013388053,
+        "position_residual_mm": 0.6171691756187602,
+        "success": false
+      },
+      {
+        "error_m": 0.08,
+        "approach_error_deg": 14.487545029525043,
+        "predicted_deg": 14.605678184847093,
+        "position_residual_mm": 0.6541142573849134,
+        "success": false
+      },
+      {
+        "error_m": 0.085,
+        "approach_error_deg": 15.351808664245324,
+        "predicted_deg": 15.47597138489838,
+        "position_residual_mm": 0.6903125357553237,
+        "success": false
+      },
+      {
+        "error_m": 0.09,
+        "approach_error_deg": 16.209030954795015,
+        "predicted_deg": 16.33900605580566,
+        "position_residual_mm": 0.7257364931385547,
+        "success": false
+      },
+      {
+        "error_m": 0.095,
+        "approach_error_deg": 17.058921068462308,
+        "predicted_deg": 17.19448603007242,
+        "position_residual_mm": 0.7603611470735967,
+        "success": false
+      },
+      {
+        "error_m": 0.1,
+        "approach_error_deg": 17.90120573582215,
+        "predicted_deg": 18.04213376645247,
+        "position_residual_mm": 0.7941641209490321,
+        "success": false
+      },
+      {
+        "error_m": 0.105,
+        "approach_error_deg": 18.73562948505637,
+        "predicted_deg": 18.88169048693739,
+        "position_residual_mm": 0.8271261583785298,
+        "success": false
+      },
+      {
+        "error_m": 0.11,
+        "approach_error_deg": 19.561954758965058,
+        "predicted_deg": 19.71291621894246,
+        "position_residual_mm": 0.8592304706062894,
+        "success": false
+      },
+      {
+        "error_m": 0.115,
+        "approach_error_deg": 20.379961897803334,
+        "predicted_deg": 20.535589747581042,
+        "position_residual_mm": 0.8904629592501102,
+        "success": false
+      },
+      {
+        "error_m": 0.12,
+        "approach_error_deg": 21.18944901619219,
+        "predicted_deg": 21.34950848347428,
+        "position_residual_mm": 0.9208122991469547,
+        "success": false
+      },
+      {
+        "error_m": 0.125,
+        "approach_error_deg": 21.99023180346056,
+        "predicted_deg": 22.154488251988273,
+        "position_residual_mm": 0.950269283646049,
+        "success": false
+      },
+      {
+        "error_m": 0.13,
+        "approach_error_deg": 22.78214333311028,
+        "predicted_deg": 22.950363010126775,
+        "position_residual_mm": 0.9788278535314517,
+        "success": false
+      },
+      {
+        "error_m": 0.135,
+        "approach_error_deg": 23.56503386676032,
+        "predicted_deg": 23.73698449753868,
+        "position_residual_mm": 1.0064833003008864,
+        "success": false
+      },
+      {
+        "error_m": 0.14,
+        "approach_error_deg": 24.338770209588784,
+        "predicted_deg": 24.514221828231243,
+        "position_residual_mm": 1.033234004470099,
+        "success": false
+      },
+      {
+        "error_m": 0.145,
+        "approach_error_deg": 25.103235580197342,
+        "predicted_deg": 25.28196102962031,
+        "position_residual_mm": 1.05907994181142,
+        "success": false
+      },
+      {
+        "error_m": 0.15,
+        "approach_error_deg": 25.858328977014896,
+        "predicted_deg": 26.04010453550529,
+        "position_residual_mm": 1.0840235426499467,
+        "success": false
+      },
+      {
+        "error_m": 0.155,
+        "approach_error_deg": 26.603964833526707,
+        "predicted_deg": 26.788570639438568,
+        "position_residual_mm": 1.1080685145896518,
+        "success": false
+      },
+      {
+        "error_m": 0.16,
+        "approach_error_deg": 27.34007235665875,
+        "predicted_deg": 27.527292914776123,
+        "position_residual_mm": 1.1312206957047966,
+        "success": false
+      },
+      {
+        "error_m": 0.165,
+        "approach_error_deg": 28.066594990652685,
+        "predicted_deg": 28.256219607457037,
+        "position_residual_mm": 1.153487815050922,
+        "success": false
+      },
+      {
+        "error_m": 0.17,
+        "approach_error_deg": 28.783489855471913,
+        "predicted_deg": 28.97531300727484,
+        "position_residual_mm": 1.1748787101589802,
+        "success": false
+      },
+      {
+        "error_m": 0.17500000000000002,
+        "approach_error_deg": 29.490727277966812,
+        "predicted_deg": 29.684548803081537,
+        "position_residual_mm": 1.1954036273325643,
+        "success": false
+      },
+      {
+        "error_m": 0.18,
+        "approach_error_deg": 30.188289949903293,
+        "predicted_deg": 30.383915427014887,
+        "position_residual_mm": 1.2150742605029405,
+        "success": false
+      },
+      {
+        "error_m": 0.185,
+        "approach_error_deg": 30.87617252531054,
+        "predicted_deg": 31.073413392468964,
+        "position_residual_mm": 1.2339030485149596,
+        "success": false
+      },
+      {
+        "error_m": 0.19,
+        "approach_error_deg": 31.55438079365224,
+        "predicted_deg": 31.753054630144977,
+        "position_residual_mm": 1.2519040019537728,
+        "success": false
+      },
+      {
+        "error_m": 0.195,
+        "approach_error_deg": 32.222931207932284,
+        "predicted_deg": 32.42286182613001,
+        "position_residual_mm": 1.269091806626116,
+        "success": false
+      },
+      {
+        "error_m": 0.2,
+        "approach_error_deg": 32.88185017873604,
+        "predicted_deg": 33.082867765562284,
+        "position_residual_mm": 1.2854821826573433,
+        "success": false
+      }
+    ],
+    "yaw": [
+      {
+        "error_deg": 0.0,
+        "approach_error_deg": 0.0007478959677837006,
+        "success": true
+      },
+      {
+        "error_deg": 1.0,
+        "approach_error_deg": 0.46171144173829465,
+        "success": true
+      },
+      {
+        "error_deg": 2.0,
+        "approach_error_deg": 0.9230298668312633,
+        "success": true
+      },
+      {
+        "error_deg": 3.0000000000000004,
+        "approach_error_deg": 1.3835634358893614,
+        "success": true
+      },
+      {
+        "error_deg": 4.0,
+        "approach_error_deg": 1.8429224296189863,
+        "success": true
+      },
+      {
+        "error_deg": 5.0,
+        "approach_error_deg": 2.300719299935112,
+        "success": true
+      },
+      {
+        "error_deg": 6.000000000000001,
+        "approach_error_deg": 2.7565732903237725,
+        "success": true
+      },
+      {
+        "error_deg": 7.0,
+        "approach_error_deg": 3.2101052946419455,
+        "success": true
+      },
+      {
+        "error_deg": 8.0,
+        "approach_error_deg": 3.6609460368848272,
+        "success": true
+      },
+      {
+        "error_deg": 9.0,
+        "approach_error_deg": 4.10873094543158,
+        "success": true
+      },
+      {
+        "error_deg": 10.0,
+        "approach_error_deg": 4.5531046681860525,
+        "success": true
+      },
+      {
+        "error_deg": 11.0,
+        "approach_error_deg": 4.993719910840483,
+        "success": true
+      },
+      {
+        "error_deg": 12.000000000000002,
+        "approach_error_deg": 5.430239345503526,
+        "success": true
+      },
+      {
+        "error_deg": 13.0,
+        "approach_error_deg": 5.862336144181676,
+        "success": true
+      },
+      {
+        "error_deg": 14.0,
+        "approach_error_deg": 6.289694242766242,
+        "success": true
+      },
+      {
+        "error_deg": 14.999999999999998,
+        "approach_error_deg": 6.712009306540288,
+        "success": true
+      },
+      {
+        "error_deg": 16.0,
+        "approach_error_deg": 7.1289890655587245,
+        "success": true
+      },
+      {
+        "error_deg": 17.0,
+        "approach_error_deg": 7.540353814608041,
+        "success": true
+      },
+      {
+        "error_deg": 18.0,
+        "approach_error_deg": 7.945836806549112,
+        "success": true
+      },
+      {
+        "error_deg": 19.0,
+        "approach_error_deg": 8.345184599663718,
+        "success": true
+      },
+      {
+        "error_deg": 20.0,
+        "approach_error_deg": 8.738157301739156,
+        "success": true
+      },
+      {
+        "error_deg": 21.0,
+        "approach_error_deg": 9.124528722297827,
+        "success": true
+      },
+      {
+        "error_deg": 22.0,
+        "approach_error_deg": 9.50408661710711,
+        "success": true
+      },
+      {
+        "error_deg": 23.0,
+        "approach_error_deg": 9.876632510000906,
+        "success": true
+      },
+      {
+        "error_deg": 24.000000000000004,
+        "approach_error_deg": 10.241982064794954,
+        "success": false
+      },
+      {
+        "error_deg": 25.0,
+        "approach_error_deg": 10.599964594253432,
+        "success": false
+      },
+      {
+        "error_deg": 26.0,
+        "approach_error_deg": 10.95042337745576,
+        "success": false
+      },
+      {
+        "error_deg": 27.0,
+        "approach_error_deg": 11.293215221671893,
+        "success": false
+      },
+      {
+        "error_deg": 28.0,
+        "approach_error_deg": 11.6282104368861,
+        "success": false
+      },
+      {
+        "error_deg": 29.000000000000004,
+        "approach_error_deg": 11.955292634775146,
+        "success": false
+      },
+      {
+        "error_deg": 29.999999999999996,
+        "approach_error_deg": 12.274357677995134,
+        "success": false
+      },
+      {
+        "error_deg": 31.0,
+        "approach_error_deg": 12.585315077887891,
+        "success": false
+      },
+      {
+        "error_deg": 32.0,
+        "approach_error_deg": 12.888085932171938,
+        "success": false
+      },
+      {
+        "error_deg": 33.0,
+        "approach_error_deg": 13.182603413379285,
+        "success": false
+      },
+      {
+        "error_deg": 34.0,
+        "approach_error_deg": 13.468812200196489,
+        "success": false
+      },
+      {
+        "error_deg": 35.0,
+        "approach_error_deg": 13.746668002017028,
+        "success": false
+      },
+      {
+        "error_deg": 36.0,
+        "approach_error_deg": 14.01613739658382,
+        "success": false
+      },
+      {
+        "error_deg": 37.0,
+        "approach_error_deg": 14.277197096453577,
+        "success": false
+      },
+      {
+        "error_deg": 38.0,
+        "approach_error_deg": 14.529833404903963,
+        "success": false
+      },
+      {
+        "error_deg": 39.0,
+        "approach_error_deg": 14.774042414782185,
+        "success": false
+      },
+      {
+        "error_deg": 40.0,
+        "approach_error_deg": 15.009828877230188,
+        "success": false
+      }
+    ]
+  },
+  "basin": {
+    "lateral_axis_m": [
+      -0.3,
+      -0.2625,
+      -0.22499999999999998,
+      -0.1875,
+      -0.15,
+      -0.11249999999999999,
+      -0.07500000000000001,
+      -0.03749999999999998,
+      0.0,
+      0.03749999999999998,
+      0.07500000000000001,
+      0.11249999999999999,
+      0.14999999999999997,
+      0.1875,
+      0.22500000000000003,
+      0.2625,
+      0.3
+    ],
+    "yaw_axis_deg": [
+      -29.999999999999996,
+      -26.250000000000004,
+      -22.5,
+      -18.75,
+      -14.999999999999998,
+      -11.25,
+      -7.499999999999999,
+      -3.7499999999999996,
+      0.0,
+      3.7499999999999996,
+      7.499999999999999,
+      11.25,
+      14.999999999999998,
+      18.75,
+      22.5,
+      26.250000000000004,
+      29.999999999999996
+    ],
+    "converged": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "converged_fraction": 0.6401384083044983
+  }
+}

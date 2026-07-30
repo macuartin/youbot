@@ -1,0 +1,10 @@
+{
+  "device": "mps",
+  "batch_size": 4,
+  "steps_run": 20,
+  "seconds_per_step": 2.3609184503555296,
+  "elapsed_s": 47.967689037323,
+  "final_loss_mean_last10": 0.18483133390545844,
+  "trainable_parameters_m": 99.880992,
+  "projected_hours_for_20k_steps": 13.116213613086277
+}

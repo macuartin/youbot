@@ -1,0 +1,47 @@
+[
+  {
+    "checkpoint": "smolvla-docking",
+    "samples": 64,
+    "action_magnitude_mean": 0.020515408366918564,
+    "open_loop_error_mean": 0.02011903189122677,
+    "open_loop_error_max": 0.08944392949342728,
+    "relative_error": 0.9806790947914124,
+    "correlation_per_axis": [
+      0.8213231298631645,
+      0.5268539517073635,
+      0.16820030022841445
+    ],
+    "baseline_predict_zero": 0.020515408366918564,
+    "baseline_predict_dataset_mean": 0.02122337743639946
+  },
+  {
+    "checkpoint": "smolvla-docking-step1500",
+    "samples": 64,
+    "action_magnitude_mean": 0.020515408366918564,
+    "open_loop_error_mean": 0.02518424764275551,
+    "open_loop_error_max": 0.11522025614976883,
+    "relative_error": 1.2275772094726562,
+    "correlation_per_axis": [
+      0.876362847289183,
+      0.383995159573861,
+      -0.06295890720880826
+    ],
+    "baseline_predict_zero": 0.020515408366918564,
+    "baseline_predict_dataset_mean": 0.02122337743639946
+  },
+  {
+    "checkpoint": "smolvla-docking-step2500",
+    "samples": 64,
+    "action_magnitude_mean": 0.020515408366918564,
+    "open_loop_error_mean": 0.01859331503510475,
+    "open_loop_error_max": 0.11105545610189438,
+    "relative_error": 0.9063097834587097,
+    "correlation_per_axis": [
+      0.9396084142563456,
+      0.4859250393288439,
+      0.2552097568887317
+    ],
+    "baseline_predict_zero": 0.020515408366918564,
+    "baseline_predict_dataset_mean": 0.02122337743639946
+  }
+]

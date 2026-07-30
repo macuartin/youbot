@@ -1,3 +1,11 @@
 .vscode
 *.pyc
 *.code-workspace
+__pycache__/
+.venv/
+.pytest_cache/
+*.egg-info/
+results/demonstrations.npz
+results/docking-dataset/
+results/smolvla-docking/
+results/smolvla-docking-step*/

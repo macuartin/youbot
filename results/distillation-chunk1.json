@@ -1,0 +1,228 @@
+{
+  "expert": {
+    "trials": 20,
+    "lost_marker": 0,
+    "completed": 20,
+    "position_error_mm": {
+      "mean": 4.812351112524542,
+      "p95": 8.172228701223908,
+      "max": 8.243317122273186
+    },
+    "heading_error_deg": {
+      "mean": 0.29264992681715163,
+      "max": 0.7371580120906763
+    },
+    "steps_mean": 187.05,
+    "settled_fraction": 1.0,
+    "grasp_success_rate": 1.0
+  },
+  "distilled": {
+    "trials": 20,
+    "lost_marker": 10,
+    "completed": 10,
+    "position_error_mm": {
+      "mean": 119.28804840425748,
+      "p95": 155.53723758047138,
+      "max": 164.12493345411949
+    },
+    "heading_error_deg": {
+      "mean": 1.9328825368227776,
+      "max": 4.663107888121969
+    },
+    "steps_mean": 547.0,
+    "settled_fraction": 0.3,
+    "grasp_success_rate": 0.7
+  },
+  "inference": {
+    "device": "mps",
+    "n_action_steps": 1,
+    "latency_mean_ms": 624.977584700304,
+    "latency_p95_ms": 706.9791316986084,
+    "effective_hz": 1.600057385225313
+  },
+  "task_budget_mm": 54.1,
+  "trials_raw": {
+    "policy": [
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 158,
+        "position_error_mm": 216.49879057693204,
+        "heading_error_deg": 0.8807411582789806,
+        "seconds": 95.65024995803833,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 113.36535648794042,
+        "heading_error_deg": 4.663107888121969,
+        "seconds": 422.28172302246094,
+        "grasp": true
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 398,
+        "position_error_mm": 221.60598235350548,
+        "heading_error_deg": 2.0126359410868075,
+        "seconds": 272.36980271339417,
+        "grasp": false
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 389,
+        "position_error_mm": 201.46135359992363,
+        "heading_error_deg": 4.617217269152843,
+        "seconds": 236.52154517173767,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 126.59378816214264,
+        "heading_error_deg": 0.40126924768180844,
+        "seconds": 358.5454888343811,
+        "grasp": false
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 394,
+        "position_error_mm": 275.50198981166216,
+        "heading_error_deg": 3.5432541118046395,
+        "seconds": 251.715882062912,
+        "grasp": false
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 319,
+        "position_error_mm": 226.06701278994245,
+        "heading_error_deg": 0.5155144323246967,
+        "seconds": 199.6911449432373,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 101.59435521595307,
+        "heading_error_deg": 2.9686287793615045,
+        "seconds": 377.896213054657,
+        "grasp": true
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 137,
+        "position_error_mm": 237.68999893494882,
+        "heading_error_deg": 0.6699177321169327,
+        "seconds": 86.13101315498352,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": true,
+        "steps": 265,
+        "position_error_mm": 108.46680971802336,
+        "heading_error_deg": 3.181652630589339,
+        "seconds": 168.2401967048645,
+        "grasp": true
+      },
+      {
+        "lost_marker": false,
+        "settled": true,
+        "steps": 510,
+        "position_error_mm": 101.19312585592797,
+        "heading_error_deg": 1.7822040692120287,
+        "seconds": 325.4753112792969,
+        "grasp": true
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 112.88371199465382,
+        "heading_error_deg": 0.7271761776600181,
+        "seconds": 368.0920922756195,
+        "grasp": true
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 443,
+        "position_error_mm": 257.5367297215881,
+        "heading_error_deg": 1.5197558458626708,
+        "seconds": 265.4081161022186,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": true,
+        "steps": 495,
+        "position_error_mm": 91.60890357391364,
+        "heading_error_deg": 2.6613571603838304,
+        "seconds": 297.52390575408936,
+        "grasp": true
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 137,
+        "position_error_mm": 172.5618537214241,
+        "heading_error_deg": 5.561587165317727,
+        "seconds": 80.44008207321167,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 145.04116484601266,
+        "heading_error_deg": 1.2897559653075763,
+        "seconds": 358.4665651321411,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 164.12493345411949,
+        "heading_error_deg": 0.9429784819171995,
+        "seconds": 359.57711577415466,
+        "grasp": false
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 398,
+        "position_error_mm": 232.5823329184878,
+        "heading_error_deg": 1.1156146535144402,
+        "seconds": 239.6764259338379,
+        "grasp": false
+      },
+      {
+        "lost_marker": true,
+        "settled": false,
+        "steps": 150,
+        "position_error_mm": 211.9459226236893,
+        "heading_error_deg": 2.784636803078954,
+        "seconds": 94.67748999595642,
+        "grasp": false
+      },
+      {
+        "lost_marker": false,
+        "settled": false,
+        "steps": 600,
+        "position_error_mm": 128.0083347338878,
+        "heading_error_deg": 0.7106949679925074,
+        "seconds": 390.18978810310364,
+        "grasp": true
+      }
+    ]
+  }
+}

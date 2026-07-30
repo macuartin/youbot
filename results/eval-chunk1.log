@@ -1,0 +1,41 @@
+Experto clasico sobre 20 ensayos...
+
+Politica destilada sobre los mismos 20 ensayos...
+Reducing the number of VLM layers to 16 ...
+Loading weights from local directory
+  ensayo 1/20: 216.50 mm, agarre no
+  ensayo 2/20: 113.37 mm, agarre si
+  ensayo 3/20: 221.61 mm, agarre no
+  ensayo 4/20: 201.46 mm, agarre no
+  ensayo 5/20: 126.59 mm, agarre no
+  ensayo 6/20: 275.50 mm, agarre no
+  ensayo 7/20: 226.07 mm, agarre no
+  ensayo 8/20: 101.59 mm, agarre si
+  ensayo 9/20: 237.69 mm, agarre no
+  ensayo 10/20: 108.47 mm, agarre si
+  ensayo 11/20: 101.19 mm, agarre si
+  ensayo 12/20: 112.88 mm, agarre si
+  ensayo 13/20: 257.54 mm, agarre no
+  ensayo 14/20: 91.61 mm, agarre si
+  ensayo 15/20: 172.56 mm, agarre no
+  ensayo 16/20: 145.04 mm, agarre no
+  ensayo 17/20: 164.12 mm, agarre no
+  ensayo 18/20: 232.58 mm, agarre no
+  ensayo 19/20: 211.95 mm, agarre no
+  ensayo 20/20: 128.01 mm, agarre si
+
+==============================================================
+                                  experto          destilada
+--------------------------------------------------------------
+ensayos completados                    20                 10
+asentaron                            100%                30%
+marcador perdido                        0                 10
+error medio (mm)                    4.812            119.288
+error p95 (mm)                      8.172            155.537
+error max (mm)                      8.243            164.125
+guinada media (deg)                 0.293              1.933
+exito de agarre                    100.0%              70.0%
+--------------------------------------------------------------
+latencia de inferencia: 625.0 ms de media (1.6 Hz efectivos) en mps
+
+Guardado en /Users/macuartin/www/robotics/youbot/results/distillation-chunk1.json

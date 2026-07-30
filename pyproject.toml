@@ -1,0 +1,34 @@
+[project]
+name = "youbot"
+version = "0.1.0"
+description = "Modelo cinematico y dinamico del KUKA youBot y control servo visual, reconstruido en 2026"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "opencv-python>=4.10",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "roboticstoolbox-python>=1.1",
+    "sympy>=1.13",
+    "matplotlib>=3.9",
+]
+# Grupo aparte: torch y lerobot pesan mucho y el nucleo no los necesita.
+# El repo se puede usar y testear entero sin instalarlos.
+vla = [
+    "lerobot[smolvla]>=0.4",
+    "torch>=2.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["youbot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

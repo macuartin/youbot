@@ -1,85 +1,71 @@
-# YouBot
-[![python](https://img.shields.io/badge/python-v3.7.X-green.svg)](https://www.python.org/)
-[![pip](https://img.shields.io/badge/pip-v10.0.X-yellow.svg)](https://pypi.org/project/pip/)
-[![virtualenv](https://img.shields.io/badge/virtualenv-v15.1.X-red.svg)](https://virtualenv.pypa.io/en/stable/)
+# youBot: de una tesis abandonada a un experimento sobre el coste de investigar
 
-ROS packages for the KUKA YouBot robot.
+Este repo tuvo su primer commit en marzo de 2020 y el último en octubre de 2020. Era el código de un trabajo de investigación de maestría en la Pontificia Universidad Javeriana, "Arquitectura de control visual de estacionamiento de precisión para un robot móvil en labores de pick & place", que nunca se terminó. La razón no fue técnica: trabajar y estudiar a la vez no era viable y había una hija en camino.
 
-## Table of Contents
+En 2026 se retoma con dos objetivos.
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quickstart](#quickstart)
-- [Contributing](#contributing)
-- [Further reading / Useful links](#further-reading--useful-links)
+**Técnico.** Cerrar los cinco objetivos específicos de 2018 en simulación, y usar ese pipeline clásico como brazo de control para una pregunta nueva: ¿reemplazan los modelos Vision-Language-Action la cadena de servo visual más cinemática inversa más planificador de trayectorias en manipulación móvil, y a qué coste?
 
-## Requirements
+**Medición.** Registrar el coste real de hacerlo con IA en el bucle, para poder comparar contra el coste de 2018 con números y no con impresiones. El experimento natural es difícil de mejorar: el mismo problema, la misma persona, ocho años de diferencia.
 
-Before you begin, ensure you have met the following requirements:
-* You have a Linux machine with Ubuntu Xenial 16.0. LTS
-* You have installed [ROS Kinetic](http://wiki.ros.org/kinetic/Installation)
-* You have installed [catkin_tools](https://catkin-tools.readthedocs.io/en/latest/installing.html)
-* You have installed [Python 2.7](https://www.python.org/downloads/)
+## Estado
 
-**Maintainer:** [Miguel Cuartin Ordaz](https://www.linkedin.com/in/macuartin/)
-  
-## Installation
+| Objetivo de 2018 | Estado |
+|---|---|
+| OE1 Control visual del AGV con marcador | **validado**, IBVS con detección real de ArUco |
+| OE2 Modelo cinemático y dinámico Newton-Euler | **validado** contra oráculo independiente a 1e-9 |
+| OE3 Control articular por cinemática inversa | **validado**, seguimiento por debajo de 1 mm |
+| OE4 Validación pick & place (95% de agarre) | **validado**, 100% sobre 500 ensayos |
+| OE5 Validación de estacionamiento (±10 cm) | **validado**, 5,4 mm de error máximo |
 
-Go to your ROS working directory:
+Los cinco objetivos específicos de 2018 están cerrados. Con un hallazgo que
+contradice al anteproyecto: el criterio de ±10 cm que el propio trabajo se fijó
+es 1,8 veces más laxo de lo que la tarea de pick & place admite en lateral. El
+límite real es 5,4 cm, y sale de la geometría del brazo:
+`arctan(error_lateral / alcance) < tolerancia de la pinza`. Detalle en
+[docs/fase2-servo-visual.md](docs/fase2-servo-visual.md).
 
-```bash
-cd ~/catkin_ws/src
-```
+### La pregunta nueva
 
-Clone the required repositories:
+¿Reemplaza una política aprendida a la cadena clásica? Se destiló el controlador
+en SmolVLA usándolo como experto generador de demostraciones, con maestro y
+alumno viendo exactamente los mismos píxeles.
 
-```bash
-git clone https://github.com/macuartin/youbot.git
-```
+| | Experto clásico | Destilada (450M, 3.000 pasos) |
+|---|---|---|
+| Error de estacionamiento, media | **4,86 mm** | 74,51 mm |
+| Éxito de agarre | **100%** | 55% |
+| Latencia real por decisión | despreciable | **625 ms (1,6 Hz)** |
 
-Compile your ROS workspace:
-
-```bash
-cd ~/catkin_ws && catkin_make
-```
-
-## Quickstart
-
-Be sure to always source the appropriate ROS setup file, e.g:
+Aprendió la componente de avance (correlación 0,82 a 0,94) y no las correcciones
+laterales y de giro, que son las que dan la precisión. Con la advertencia
+importante de que el presupuesto de entrenamiento fue el 15% del recomendado, así
+que **esto no establece una limitación del método**, solo lo que se consigue con
+este montaje. La hipótesis abierta y cómo falsarla, en
+[docs/fase4-destilacion.md](docs/fase4-destilacion.md).
 
 ```bash
-source ~/catkin_ws/devel/setup.bash
-```
-You might want to add the line above to your ~/.bashrc file.
-
-Try the following command:
-
-```bash
-roslaunch youbot_bringup main.launch
+uv sync --group dev
+uv run pytest
+uv run python experiments/parking_campaign.py
 ```
 
-## Contributing
+El oráculo es [`roboticstoolbox-python`](https://github.com/petercorke/robotics-toolbox-python): se construye el mismo robot desde la misma tabla DH y se comparan cinemática directa, los dos jacobianos, torques de gravedad, matriz de masa y Newton-Euler completo sobre 25 configuraciones aleatorias. Los tests que no dependen de él siguen corriendo si no está instalado.
 
-To contribute, follow these steps:
+## Estructura
 
-1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
-3. Make your changes and commit them: `git commit -m '<commit_message>'`
-4. Push to the original branch: `git push origin <project_name>/<location>`
-5. Create the pull request.
+```
+youbot/     núcleo Python 3 sin ROS: cinemática, dinámica, trayectorias, servo visual
+docs/       baseline histórico, resultados por fase, survey del estado del arte
+experiments/ campañas reproducibles que generan results/
+results/    salidas de las campañas: JSON y figuras
+paper/      preprint
+legacy/     los paquetes ROS 1 Kinetic / Python 2.7 de 2020, tal cual quedaron
+EFFORT.md   bitácora de esfuerzo
+```
 
-Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+`legacy/` no se toca. Es el objeto de estudio: ahí viven los cinco bugs que mataron el trabajo original, documentados en [docs/baseline-2018.md](docs/baseline-2018.md).
 
-## Further reading / Useful links
+## Contacto
 
-* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-* Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-## Contact
-
-If you want to contact me you can reach me at [macuartin@gmail.com](mailto:macuartin@gmail.com)
-
-## License
-<!--- If you're not sure which open license to use see https://choosealicense.com/--->
-
-This project uses the following license: [<license_name>](<link>).
+[macuartin@gmail.com](mailto:macuartin@gmail.com)
