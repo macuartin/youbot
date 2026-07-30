@@ -18,7 +18,7 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
-| 3 | 2026-07-30 | 3 | | | 0 | Survey del estado del arte VLA con fuentes primarias (`docs/survey.md`). Cruce del presupuesto de error medido en la Fase 2 con las cifras publicadas: la pregunta de investigacion queda respondida sin reentrenar nada. Decision de alcance de la Fase 4 con datos. |
+| 3 | 2026-07-30 | 3, más rework de la 2 | 15m 41s | 6,38 | 0,11 | Survey del estado del arte VLA con fuentes primarias (`docs/survey.md`). Cruce del presupuesto de error medido en la Fase 2 con las cifras publicadas: la pregunta de investigación queda respondida sin reentrenar nada. Corrección del criterio de parada de la Fase 2 (la tolerancia estaba por debajo del suelo de ruido). Detector real dentro del lazo, que valida el modelo de ruido de forma independiente. |
 | 2 | 2026-07-30 | 2 | 29m 55s | 9,55 | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
 | 1 | 2026-07-30 | 0 y 1 | 59m 29s | ≤ 12,95 | 0,05 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, `docs/baseline-2018.md`, esta bitácora. Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
 
@@ -36,9 +36,9 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | Métrica | Valor |
 |---|---|
-| Tramos medidos | 2 |
-| Wall-clock total | 1h 29m 24s |
-| Coste total (USD) | ≤ 22,50 |
+| Tramos medidos | 3 |
+| Wall-clock total | 1h 45m 05s |
+| Coste total (USD) | ≤ 28,88 |
 | Objetivos de 2018 validados | **5 de 5** |
 | Líneas de código propio validado | 1.914 |
 
@@ -46,10 +46,10 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | | 2017-2020 | 2026 |
 |---|---|---|
-| Elapsed | 34 meses | 1h 29m |
+| Elapsed | 34 meses | 1h 45m |
 | Objetivos validados | 0 de 5 | 5 de 5 |
 | Líneas de código | 972, ninguna validada | 1.914, con oráculos independientes |
-| Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 22,50 USD |
+| Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 28,88 USD |
 
 **Esta tabla no es una comparación limpia y no debe presentarse como tal.** Las diferencias que no son la IA:
 
@@ -58,9 +58,9 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 - Los 34 meses son tiempo de calendario de alguien trabajando a jornada completa, no 34 meses de dedicación.
 - El presupuesto de 2018 era una declaración institucional que incluía salarios de director y codirector, no dinero que el estudiante gastara de su bolsillo.
 
-Lo que la tabla sí sostiene, y es suficiente: el trabajo técnico que quedó sin cerrar durante 34 meses se cerró en hora y media, y los cinco bugs que lo bloqueaban se identificaron leyendo el código, no ejecutándolo.
+Lo que la tabla sí sostiene, y es suficiente: el trabajo técnico que quedó sin cerrar durante 34 meses se cerró en hora y tres cuartos, y los cinco bugs que lo bloqueaban se identificaron leyendo el código, no ejecutándolo.
 
-Dato de método que conviene retener para el post: el 86% del consumo ocurrió por encima de 150k de contexto. Lo caro no es el número de llamadas, es la longitud de la sesión. Investigar así tiene una estructura de costes distinta a programar por tareas cortas.
+Dato de método que conviene retener para el post: el 87% del consumo ocurrió por encima de 150k de contexto. Lo caro no es el número de llamadas, es la longitud de la sesión. Investigar así tiene una estructura de costes distinta a programar por tareas cortas.
 
 ## Notas de método
 
