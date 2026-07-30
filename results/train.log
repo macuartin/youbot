@@ -158,3 +158,54 @@ objc[87198]: Class AVFAudioReceiver is implemented in both /Users/macuartin/www/
   paso  1500/3000 | loss 0.0734 | 3.14 s/paso
     checkpoint guardado en el paso 1500
   paso  1510/3000 | loss 0.0702 | 3.33 s/paso
+  paso  1520/3000 | loss 0.0668 | 3.38 s/paso
+  paso  1530/3000 | loss 0.0846 | 3.31 s/paso
+  paso  1540/3000 | loss 0.0651 | 3.37 s/paso
+  paso  1550/3000 | loss 0.0949 | 3.23 s/paso
+  paso  1560/3000 | loss 0.0686 | 3.19 s/paso
+  paso  1570/3000 | loss 0.0741 | 3.15 s/paso
+  paso  1580/3000 | loss 0.0974 | 3.15 s/paso
+  paso  1590/3000 | loss 0.0812 | 3.24 s/paso
+  paso  1600/3000 | loss 0.0679 | 3.15 s/paso
+  paso  1610/3000 | loss 0.0669 | 3.12 s/paso
+  paso  1620/3000 | loss 0.0727 | 3.23 s/paso
+  paso  1630/3000 | loss 0.0923 | 3.16 s/paso
+  paso  1640/3000 | loss 0.0663 | 3.13 s/paso
+  paso  1650/3000 | loss 0.0602 | 3.16 s/paso
+  paso  1660/3000 | loss 0.0583 | 3.07 s/paso
+  paso  1670/3000 | loss 0.0732 | 3.09 s/paso
+  paso  1680/3000 | loss 0.0766 | 3.03 s/paso
+  paso  1690/3000 | loss 0.0625 | 3.06 s/paso
+  paso  1700/3000 | loss 0.0616 | 3.00 s/paso
+  paso  1710/3000 | loss 0.0644 | 3.01 s/paso
+  paso  1720/3000 | loss 0.0736 | 3.06 s/paso
+  paso  1730/3000 | loss 0.0652 | 3.12 s/paso
+  paso  1740/3000 | loss 0.0949 | 3.06 s/paso
+  paso  1750/3000 | loss 0.0667 | 3.08 s/paso
+  paso  1760/3000 | loss 0.0935 | 3.06 s/paso
+  paso  1770/3000 | loss 0.0687 | 3.20 s/paso
+  paso  1780/3000 | loss 0.0666 | 3.04 s/paso
+  paso  1790/3000 | loss 0.0694 | 3.07 s/paso
+  paso  1800/3000 | loss 0.0894 | 3.05 s/paso
+  paso  1810/3000 | loss 0.0577 | 3.04 s/paso
+  paso  1820/3000 | loss 0.0631 | 3.03 s/paso
+  paso  1830/3000 | loss 0.0759 | 3.08 s/paso
+  paso  1840/3000 | loss 0.0816 | 3.07 s/paso
+  paso  1850/3000 | loss 0.0676 | 3.13 s/paso
+  paso  1860/3000 | loss 0.0827 | 3.02 s/paso
+  paso  1870/3000 | loss 0.0825 | 3.11 s/paso
+  paso  1880/3000 | loss 0.0643 | 3.13 s/paso
+  paso  1890/3000 | loss 0.0720 | 2.98 s/paso
+  paso  1900/3000 | loss 0.0681 | 3.00 s/paso
+  paso  1910/3000 | loss 0.0600 | 2.99 s/paso
+  paso  1920/3000 | loss 0.0598 | 3.03 s/paso
+  paso  1930/3000 | loss 0.0617 | 3.06 s/paso
+  paso  1940/3000 | loss 0.0675 | 2.89 s/paso
+  paso  1950/3000 | loss 0.0752 | 2.97 s/paso
+  paso  1960/3000 | loss 0.0584 | 3.35 s/paso
+  paso  1970/3000 | loss 0.0632 | 3.45 s/paso
+  paso  1980/3000 | loss 0.0688 | 3.36 s/paso
+  paso  1990/3000 | loss 0.0620 | 3.08 s/paso
+  paso  2000/3000 | loss 0.0634 | 3.05 s/paso
+    checkpoint guardado en el paso 2000
+  paso  2010/3000 | loss 0.0542 | 3.20 s/paso
