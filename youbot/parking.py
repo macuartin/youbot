@@ -24,8 +24,10 @@ import numpy as np
 from .model import CAMERA_MOUNT, CAMERA_ROTATION
 from .vision import (
     Camera,
+    detect_corners,
     interaction_matrix,
     marker_corners,
+    render_marker_view,
     transform_points,
     world_to_camera,
 )
@@ -138,6 +140,9 @@ def park(
     max_iterations: int = 600,
     pixel_noise: float = 0.0,
     actuation_noise: float = 0.0,
+    use_detector: bool = False,
+    sensor_noise: float = 0.0,
+    on_step=None,
     tolerance: float = 1e-3,
     settle_window: int = 20,
     settle_position: float = 1e-3,
@@ -154,7 +159,16 @@ def park(
         gain: ganancia proporcional de la ley de control.
         dt: paso de integracion, en segundos.
         pixel_noise: desviacion tipica del ruido de deteccion de esquinas, en
-            pixeles.
+            pixeles. Modelo del ruido del detector; se ignora si use_detector.
+        use_detector: si True, en cada paso se sintetiza la vista del marcador y
+            las esquinas las extrae cv2.aruco de la imagen, en vez de proyectarlas
+            geometricamente y anadirles ruido. Mas lento, pero es la unica forma
+            de que una politica aprendida vea exactamente los mismos pixeles que
+            uso el maestro, que es lo que exige un experimento de destilacion.
+        sensor_noise: ruido gaussiano de sensor de la imagen, en niveles de gris.
+            Solo aplica si use_detector.
+        on_step: callback opcional que recibe (iteracion, pose, imagen, accion) en
+            cada paso. Es el gancho con el que se graban demostraciones.
         actuation_noise: desviacion tipica del error relativo de ejecucion de las
             velocidades comandadas, adimensional. 0.02 son ruedas que se desvian
             un 2 por ciento de lo pedido.
@@ -212,7 +226,22 @@ def park(
             lost = True
             break
 
-        if pixel_noise > 0:
+        image = None
+        if use_detector:
+            image = render_marker_view(
+                camera,
+                camera_pose_matrix(pose),
+                scene.marker_pose,
+                scene.marker_side,
+                noise_sigma=sensor_noise,
+                rng=generator,
+            )
+            detected = detect_corners(image)
+            if detected is None:
+                lost = True
+                break
+            pixels = detected
+        elif pixel_noise > 0:
             pixels = pixels + generator.normal(0.0, pixel_noise, pixels.shape)
 
         error = camera.normalize(pixels).ravel() - s_target
@@ -239,6 +268,9 @@ def park(
         # Ley de control: minimos cuadrados amortiguados sobre las tres
         # velocidades de la plataforma.
         u = -gain * np.linalg.solve(ATA, A.T @ error)
+
+        if on_step is not None:
+            on_step(iteration, pose.copy(), image, u.copy())
 
         if actuation_noise > 0:
             u = u * (1.0 + generator.normal(0.0, actuation_noise, u.shape))

@@ -17,7 +17,7 @@ El marcador de la estación es plano. Lo que la cámara ve de un plano es exacta
 
 Con eso, la campaña de 500 ensayos con detección real tarda 21 segundos. Renderizando cada fotograma en MuJoCo sería del orden de horas, y los fallos del render se confundirían con los del control.
 
-MuJoCo entra en la Fase 4, donde sí hace falta: un modelo Vision-Language-Action consume imágenes RGB de una escena completa, y la validación de un agarre con contacto necesita física de contacto. Aquí no.
+En la Fase 4 tampoco acabó haciendo falta, y por el mismo razonamiento llevado un paso más allá: la destilación del controlador clásico en una política aprendida exige que maestro y alumno vean **los mismos píxeles**, y esos píxeles son justamente los que produce este renderizador. Meter MuJoCo habría cambiado la observación del alumno respecto de la del maestro, que es lo contrario de lo que un experimento de destilación necesita.
 
 ## Qué se implementó
 
