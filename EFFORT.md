@@ -18,7 +18,7 @@ Ver [docs/baseline-2018.md](docs/baseline-2018.md). Resumen: 34 meses, 0 de 5 ob
 
 | # | Fecha | Fase | Wall-clock | Tokens (USD) | Externo (USD) | Entregable |
 |---|---|---|---|---|---|---|
-| 4 | 2026-07-30 | 4 | 2h 44m 41s + evaluación | 24,72 + pendiente | 0 | Dataset de 120 demostraciones del experto, barrido de resolución, fine-tune de SmolVLA (3.000 pasos, 2h 25m), evaluador en lazo cerrado, post 2 del blog y `docs/fase4-destilacion.md`. **De las 2h 44m, 2h 25m fueron entrenamiento desatendido.** Cierre de fase: evaluación en lazo cerrado (40 + 20 ensayos), diagnóstico en lazo abierto sobre tres checkpoints, y dos rectificaciones de medición propias. |
+| 4 | 2026-07-30 | 4 | 4h 27m 02s | 34,39 | 0 | Dataset de 120 demostraciones del experto, barrido de resolución, fine-tune de SmolVLA (3.000 pasos, 2h 25m), evaluador en lazo cerrado, post 2 del blog y `docs/fase4-destilacion.md`. Dataset de 120 demostraciones, barrido de resolución, fine-tune de SmolVLA, evaluación en lazo cerrado (40 + 20 ensayos), diagnóstico en lazo abierto sobre tres checkpoints, dos rectificaciones de medición propias, post 2 del blog y `docs/fase4-destilacion.md`. **De las 4h 27m, unas 4h 10m fueron máquina desatendida.** |
 | 3 | 2026-07-30 | 3, más rework de la 2 | 15m 41s | 6,38 | 0,11 | Survey del estado del arte VLA con fuentes primarias (`docs/survey.md`). Cruce del presupuesto de error medido en la Fase 2 con las cifras publicadas: la pregunta de investigación queda respondida sin reentrenar nada. Corrección del criterio de parada de la Fase 2 (la tolerancia estaba por debajo del suelo de ruido). Detector real dentro del lazo, que valida el modelo de ruido de forma independiente. |
 | 2 | 2026-07-30 | 2 | 29m 55s | 9,55 | 0 | Servo visual de estacionamiento (`vision.py`, `parking.py`) validado con diferencia finita, ruido del detector ArUco medido (0,5 px), agarre con restricción de aproximación, campaña de 500 ensayos y barridos de sensibilidad. 24 tests verdes. **OE1, OE4 y OE5 cerrados: los cinco objetivos de 2018 completos.** Hallazgo: el criterio de ±10 cm del anteproyecto es 1,8 veces más laxo que lo que la tarea admite. |
 | 1 | 2026-07-30 | 0 y 1 | 59m 29s | ≤ 12,95 | 0,05 | Revisión del material de 2018-2020, diagnóstico de 5 bugs bloqueantes, plan de 7 fases, `docs/baseline-2018.md`, esta bitácora. Núcleo Python 3 sin ROS (`youbot/`): modelo, cinemática, dinámica Newton-Euler, trayectorias, control articular. Discrepancias DH resueltas contra implementación de referencia. 13 tests verdes con oráculo independiente a 1e-9. **OE2 y OE3 cerrados.** |
@@ -38,9 +38,11 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 | Métrica | Valor |
 |---|---|
 | Tramos medidos | 4 |
-| Wall-clock total | 4h 29m 46s |
-| Coste total (USD) | ≤ 53,60 |
-| De los cuales, máquina desatendida | 2h 25m |
+| Wall-clock total | **6h 12m 07s** |
+| Tiempo de API (cómputo del modelo) | **1h 23m 46s**, el 22% del reloj |
+| Máquina desatendida (entrenamiento y evaluaciones) | ~4h 10m |
+| Coste total (USD) | **63,27** |
+| Coste por objetivo de 2018 validado | 12,65 |
 | Objetivos de 2018 validados | **5 de 5** |
 | Fases completadas | 0, 1, 2, 3, 4 y 7 de 7 |
 | Líneas de código propio validado | 1.914 |
@@ -49,10 +51,10 @@ Las 2 búsquedas web son el único gasto externo hasta ahora, y no son un detall
 
 | | 2017-2020 | 2026 |
 |---|---|---|
-| Elapsed | 34 meses | 4h 30m, de las que 2h 25m son máquina sola |
+| Elapsed | 34 meses | 6h 12m, de las que ~4h 10m son máquina sola |
 | Objetivos validados | 0 de 5 | 5 de 5 |
 | Líneas de código | 972, ninguna validada | 1.914, con oráculos independientes |
-| Coste directo | $102.600.000 COP declarados en el presupuesto | ≤ 53,60 USD |
+| Coste directo | $102.600.000 COP declarados en el presupuesto | 63,27 USD |
 
 **Esta tabla no es una comparación limpia y no debe presentarse como tal.** Las diferencias que no son la IA:
 
@@ -65,7 +67,13 @@ Lo que la tabla sí sostiene, y es suficiente: el trabajo técnico que quedó si
 
 Dato de método que conviene retener para el post: el 87% del consumo ocurrió por encima de 150k de contexto. Lo caro no es el número de llamadas, es la longitud de la sesión. Investigar así tiene una estructura de costes distinta a programar por tareas cortas.
 
-Y una consecuencia incómoda de eso, visible en la fila 4. El entrenamiento de SmolVLA fueron 2h 25m de máquina sola, sin trabajo humano ni de modelo. Pero el coste de tokens de ese tramo fue de 24,72 USD, más que las tres fases anteriores juntas. La razón es que la sesión siguió abierta y cada intercambio, por corto que fuera, arrastraba un contexto de más de 150k. **Esperar dentro de una sesión larga no es gratis.** La lectura correcta no es "reconstruir la tesis costó 53 dólares" sino que una parte creciente de esa cifra la paga la duración de la sesión, no el trabajo hecho en ella.
+Y una consecuencia incómoda de eso, que las cifras finales dejan clarísima.
+
+De las 6h 12m de reloj, solo **1h 23m fueron tiempo de API**, o sea cómputo real del modelo: el 22%. Otras ~4h 10m fueron máquina desatendida entrenando y evaluando, sin trabajo humano ni de modelo. Y sin embargo la Fase 4, que es donde vive casi toda esa espera, costó 34,39 USD: más que las cuatro fases anteriores juntas.
+
+La razón es que la sesión siguió abierta y cada intercambio, por corto que fuera, arrastraba un contexto de más de 150k. El 90% del consumo ocurrió por encima de ese umbral y el 42% vino de sesiones de más de 8 horas.
+
+**Esperar dentro de una sesión larga no es gratis, y llega a costar más que trabajar.** La lectura correcta no es "reconstruir la tesis costó 63 dólares" sino que una parte grande de esa cifra la paga la duración de la sesión y no el trabajo hecho en ella. Quien quiera repetir este ejercicio más barato debería cerrar la sesión mientras la máquina entrena y abrir otra al terminar. Es una lección de método sobre cómo se usa la herramienta, no sobre la dificultad del problema.
 
 ## Estado al cerrar la sesión del 2026-07-30
 
